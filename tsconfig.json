@@ -21,7 +21,8 @@
   "include": [
     "app/**/*",
     "./scripts/**/*",
-    "_/App.tsx"
+    "_/App.tsx",
+    "_/modal.tsx"
   ],
   "files": [
     "env.d.ts",

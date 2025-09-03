@@ -1,9 +1,9 @@
-import { DarkTheme, ThemeProvider } from '@react-navigation/native'
-import { Stack } from 'expo-router'
 import * as React from 'react'
-import Constants from 'expo-constants'
-import { StyleSheet, Text, View } from 'react-native'
 import * as SQLite from 'expo-sqlite'
+import Constants from 'expo-constants'
+import { StyleSheet, Text } from 'react-native'
+import { DefaultTheme, ThemeProvider } from '@react-navigation/native'
+import { Icon, Label, NativeTabs } from 'expo-router/unstable-native-tabs'
 
 export { ErrorBoundary } from 'expo-router'
 
@@ -13,40 +13,25 @@ export const unstable_settings = {
 
 export default function RootLayout() {
   return (
-    <ThemeProvider value={DarkTheme}>
+    <ThemeProvider value={DefaultTheme}>
       <React.Suspense fallback={<Text>Loading...</Text>}>
         <SQLite.SQLiteProvider
           databaseName="porto-rn.db"
           onInit={async (_db) => console.info('onInit', _db)}
         >
-          <Stack>
-            <Header />
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-          </Stack>
+          <NativeTabs {...{ blurEffect: 'prominent' }} tintColor="white">
+            <NativeTabs.Trigger name="index">
+              <Label>Home</Label>
+              <Icon sf="house.fill" drawable="custom_android_drawable" />
+            </NativeTabs.Trigger>
+            <NativeTabs.Trigger name="settings">
+              <Icon sf="gear" drawable="custom_settings_drawable" />
+              <Label>Settings</Label>
+            </NativeTabs.Trigger>
+          </NativeTabs>
         </SQLite.SQLiteProvider>
       </React.Suspense>
     </ThemeProvider>
-    // </View>
-  )
-}
-
-export function Header() {
-  const db = SQLite.useSQLiteContext()
-  const [version, setVersion] = React.useState('')
-  React.useEffect(() => {
-    async function setup() {
-      const result = await db.getFirstAsync<{ 'sqlite_version()': string }>(
-        'SELECT sqlite_version()',
-      )
-      setVersion(result?.['sqlite_version()'] ?? '')
-    }
-    setup()
-  }, [db.getFirstAsync])
-  return (
-    <View style={styles.headerContainer}>
-      <Text style={styles.headerText}>SQLite version: {version}</Text>
-    </View>
   )
 }
 

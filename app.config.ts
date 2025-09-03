@@ -1,14 +1,6 @@
 import 'tsx/cjs'
 import type { ExpoConfig, ConfigContext } from 'expo/config'
 
-/**
- * TODO:
- * 
- * Add plugins:
- *   - https://docs.expo.dev/versions/v54.0.0/sdk/router/
-     - https://docs.expo.dev/versions/v54.0.0/sdk/router-ui/
- */
-
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
   slug: 'porto-rn',
@@ -16,9 +8,19 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   version: '1.0.0',
   scheme: 'porto-rn',
   jsEngine: 'hermes',
+  newArchEnabled: true,
   ios: {
     jsEngine: 'jsc',
-    associatedDomains: [''],
+    supportsTablet: true,
+    appleTeamId: 'Q7767Q7TRJ',
+    bundleIdentifier: 'org.name.portorn',
+    associatedDomains: [
+      //
+      'webcredentials:6d0b920b8203.ngrok.app?mode=developer',
+    ],
+  },
+  android: {
+    package: 'org.name.portorn',
   },
   web: {
     bundler: 'metro',

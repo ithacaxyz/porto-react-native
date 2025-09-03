@@ -6,16 +6,23 @@
     "start": "expo start --dev-client",
     "android": "expo run:android",
     "ios": "expo run:ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "check": "biome check --write . --unsafe",
+    "typecheck": "tsc --noEmit --project tsconfig.json"
   },
   "dependencies": {
-    "expo": "~53.0.22",
-    "expo-status-bar": "~2.2.3",
-    "react": "19.0.0",
-    "react-native": "0.79.6"
+    "@expo/ui": "~0.2.0-alpha.8",
+    "expo": "^54.0.0-preview.13",
+    "expo-device": "~8.0.6",
+    "expo-status-bar": "~3.0.7",
+    "react": "19.1.0",
+    "react-native": "0.81.1",
+    "react-native-safe-area-context": "~5.6.0",
+    "react-native-web": "^0.21.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.0"
+    "@babel/core": "^7.20.0",
+    "@biomejs/biome": "^2.2.2"
   },
   "private": true
 }

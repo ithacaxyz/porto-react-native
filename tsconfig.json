@@ -18,14 +18,22 @@
       ]
     }
   },
+  "include": [
+    "app/**/*",
+    "./scripts/**/*",
+    "_/App.tsx"
+  ],
   "files": [
+    "env.d.ts",
+    "index.js",
+    "reset.d.ts",
     "app.config.ts",
     "metro.config.js",
-    "App.tsx",
-    "reset.d.ts",
-    "index.js"
+    "babel.config.js"
   ],
   "exclude": [
-    "**/_/**"
+    "**/_/**",
+    "node_modules",
+    "**/node_modules/**"
   ]
 }

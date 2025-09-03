@@ -35,3 +35,7 @@ yarn-error.*
 # typescript
 *.tsbuildinfo
 _
+credentials.json
+.env
+.env.*
+!.env.example

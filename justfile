@@ -12,6 +12,9 @@ test:
 build:
     echo "build"
 
+clear:
+  bun expo start --clear
+
 doctor:
     bun expo install --fix
-    bun expo-doctor
+    bun x expo-doctor

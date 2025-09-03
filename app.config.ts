@@ -10,4 +10,12 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   ios: {
     jsEngine: 'jsc',
   },
+  extra: {
+    /**
+     * @see https://expo.dev/accounts/o-az/projects/porto-rn
+     */
+    eas: {
+      projectId: '2465a0e5-8758-4bbf-8641-49004b3ea709',
+    },
+  },
 })

@@ -1,0 +1,25 @@
+{
+  "extends": ["expo/tsconfig.base"],
+  "compilerOptions": {
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "exactOptionalPropertyTypes": false,
+    "strict": true,
+    "strictNullChecks": true,
+    "noUncheckedIndexedAccess": true,
+    "allowImportingTsExtensions": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "baseUrl": ".",
+    "paths": {
+      "#*": ["./*"]
+    }
+  },
+  "files": [
+    "app.config.ts",
+    "metro.config.js",
+    "App.tsx",
+    "reset.d.ts",
+    "index.js"
+  ],
+  "exclude": ["**/_/**"]
+}

@@ -1,30 +1,25 @@
 import 'tsx/cjs'
 import type { ExpoConfig, ConfigContext } from 'expo/config'
 
-export default ({ config }: ConfigContext): ExpoConfig => ({
-  ...config,
+export default (context: ConfigContext): ExpoConfig => ({
+  ...context.config,
   slug: 'porto-rn',
   name: 'porto-rn',
   version: '1.0.0',
   scheme: 'porto-rn',
-  jsEngine: 'hermes',
   newArchEnabled: true,
   ios: {
-    jsEngine: 'jsc',
     supportsTablet: true,
     appleTeamId: 'Q7767Q7TRJ',
     bundleIdentifier: 'org.name.portorn',
-    associatedDomains: [
-      //
-      'webcredentials:6d0b920b8203.ngrok.app?mode=developer',
-    ],
+    associatedDomains: ['webcredentials:6d0b920b8203.ngrok.app?mode=developer'],
   },
   android: {
     package: 'org.name.portorn',
   },
   web: {
+    output: 'static',
     bundler: 'metro',
-    output: 'server',
   },
   extra: {
     /**
@@ -34,9 +29,11 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       projectId: '2465a0e5-8758-4bbf-8641-49004b3ea709',
     },
   },
-
+  experiments: {
+    typedRoutes: true,
+  },
   plugins: [
-    // ['android-credential-manager', { domainUrl: '' }],
+    ['expo-dev-client', { launchMode: 'most-recent' }],
     ['expo-router'],
     [
       'expo-sqlite',
@@ -50,7 +47,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         },
       },
     ],
-    ['expo-dev-client', { launchMode: 'most-recent' }],
     [
       /**
        * @see https://docs.expo.dev/versions/v54.0.0/sdk/webbrowser/

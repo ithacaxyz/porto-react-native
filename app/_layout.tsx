@@ -1,7 +1,6 @@
 import * as React from 'react'
+import { Text } from 'react-native'
 import * as SQLite from 'expo-sqlite'
-import Constants from 'expo-constants'
-import { StyleSheet, Text } from 'react-native'
 import { DefaultTheme, ThemeProvider } from '@react-navigation/native'
 import { Icon, Label, NativeTabs } from 'expo-router/unstable-native-tabs'
 
@@ -19,7 +18,7 @@ export default function RootLayout() {
           databaseName="porto-rn.db"
           onInit={async (_db) => console.info('onInit', _db)}
         >
-          <NativeTabs {...{ blurEffect: 'prominent' }} tintColor="white">
+          <NativeTabs>
             <NativeTabs.Trigger name="index">
               <Label>Home</Label>
               <Icon sf="house.fill" drawable="custom_android_drawable" />
@@ -34,20 +33,3 @@ export default function RootLayout() {
     </ThemeProvider>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    justifyContent: 'center',
-    paddingTop: Constants.statusBarHeight,
-  },
-  headerContainer: {
-    paddingTop: Constants.statusBarHeight,
-  },
-  headerText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-})

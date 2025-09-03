@@ -39,3 +39,6 @@ credentials.json
 .env
 .env.*
 !.env.example
+
+ios
+android

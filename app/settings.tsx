@@ -37,11 +37,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 14,
   },
-  headerContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
+  headerContainer: {},
   headerText: {
     fontSize: 20,
     fontWeight: 'bold',

@@ -22,7 +22,9 @@
     "app/**/*",
     "./scripts/**/*",
     "_/App.tsx",
-    "_/modal.tsx"
+    "_/modal.tsx",
+    ".expo/types/**/*.ts",
+    "expo-env.d.ts"
   ],
   "files": [
     "env.d.ts",

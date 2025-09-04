@@ -2,10 +2,6 @@ import 'tsx/cjs'
 import type { ExpoConfig, ConfigContext } from 'expo/config'
 
 const scheme = 'porto-rn'
-const associatedDomains = [
-  'o.bun-alewife.ts.net',
-  '6ddb0ea71139.ngrok.app',
-].map((hostname) => `webcredentials:${hostname}`)
 
 export default (context: ConfigContext): ExpoConfig => ({
   ...context.config,
@@ -19,7 +15,7 @@ export default (context: ConfigContext): ExpoConfig => ({
     supportsTablet: true,
     appleTeamId: 'Q7767Q7TRJ',
     bundleIdentifier: 'org.name.portorn',
-    associatedDomains: ['webcredentials:o.bun-alewife.ts.net'],
+    associatedDomains: ['webcredentials:xporto.up.railway.app'],
   },
   android: {
     package: 'org.name.portorn',

@@ -1,5 +1,8 @@
 interface EnvironmentVariables {
   readonly NODE_ENV: 'development' | 'production'
+  readonly ENVIRONMENT: 'development' | 'production'
+
+  readonly PORT: string
 
   readonly APP_NAME: string
 
@@ -10,4 +13,12 @@ interface EnvironmentVariables {
   readonly IOS_PROJECT: string
   readonly IOS_BUNDLE_ID: string
   readonly IOS_DEVELOPER_PORTAL_ID: string
+}
+
+declare namespace NodeJS {
+  interface ProcessEnv extends EnvironmentVariables {}
+}
+
+declare namespace Bun {
+  interface Env extends EnvironmentVariables {}
 }

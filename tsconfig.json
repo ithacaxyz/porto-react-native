@@ -23,7 +23,7 @@
   },
   "include": [
     "src/**/*",
-    "expo-env.d.ts",
+    "server/**/*",
     "./scripts/**/*",
     ".expo/types/**/*.ts",
     "nativewind-env.d.ts"
@@ -33,9 +33,10 @@
     "index.js",
     "reset.d.ts",
     "app.config.ts",
+    "expo-env.d.ts",
     "metro.config.js",
-    "tailwind.config.ts",
     "babel.config.js",
+    "tailwind.config.ts",
     "nativewind-env.d.ts"
   ],
   "exclude": [

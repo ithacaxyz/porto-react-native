@@ -7,7 +7,7 @@ import { Platform } from 'react-native'
 import * as passkey from 'react-native-passkeys'
 import { base, baseSepolia } from 'porto/Chains'
 import { custom, createWalletClient } from 'viem'
-import { Porto, Mode, Storage, Dialog } from 'porto'
+import { Porto, Mode, Storage } from 'porto'
 
 async function createFn(options: any): Promise<any> {
   const publicKey = options?.publicKey || options
@@ -88,24 +88,37 @@ async function getFn(options: any): Promise<any> {
 }
 
 const portoMode =
-  Platform.OS === 'web'
-    ? Mode.dialog({ renderer: Dialog.popup() })
-    : Mode.relay({
-        keystoreHost: rnRp?.id,
-        webAuthn: { createFn, getFn },
-      })
+  // Platform.OS === 'web'
+  //   ? Mode.dialog({ renderer: Dialog.popup() })
+  //   :
+  Mode.relay({
+    keystoreHost: rnRp?.id,
+    webAuthn: { createFn, getFn },
+  })
 
-export const porto = Porto.create({
-  mode: portoMode,
-  chains: [base, baseSepolia],
-  storage:
-    // Platform.OS === 'web'
-    //   ? Storage.localStorage()
-    //   :
-      Storage.combine(Storage.cookie(), Storage.memory()),
-})
+// export const porto = Porto.create({
+//   mode: portoMode,
+//   chains: [base, baseSepolia],
+//   storage:
+//     Platform.OS === 'web'
+//       ? Storage.localStorage()
+//       : Storage.combine(Storage.cookie(), Storage.memory()),
+// })
 
-export const walletClient = createWalletClient({
-  chain: baseSepolia,
-  transport: custom(porto.provider),
-})
+export function getPorto() {
+  const porto = Porto.create({
+    mode: portoMode,
+    chains: [base, baseSepolia],
+    storage:
+      Platform.OS === 'web'
+        ? Storage.localStorage()
+        : Storage.combine(Storage.cookie(), Storage.memory()),
+  })
+
+  const walletClient = createWalletClient({
+    chain: baseSepolia,
+    transport: custom(porto.provider),
+  })
+
+  return { porto, walletClient }
+}

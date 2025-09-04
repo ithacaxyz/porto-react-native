@@ -17,16 +17,16 @@ import {
 } from '#lib/crypto.ts'
 import * as React from 'react'
 import alert from '#lib/alert.ts'
-import { porto } from '#lib/porto.ts'
+import { getPorto } from '#lib/porto.ts'
 import * as passkey from 'react-native-passkeys'
 
 export default function Tab() {
-  const [result, setResult] = React.useState<any>(null)
-  const [creationResponse, setCreationResponse] = React.useState<
-    NonNullable<Awaited<ReturnType<typeof passkey.create>>>['response'] | null
-  >(null)
   const [credentialId, setCredentialId] = React.useState('')
+  const [result, setResult] = React.useState<string | null>(null)
   const [portoAddress, setPortoAddress] = React.useState<string | null>(null)
+  const [creationResponse, setCreationResponse] = React.useState<string | null>(
+    null,
+  )
 
   async function createPasskey() {
     try {
@@ -46,7 +46,7 @@ export default function Tab() {
       if (json?.rawId) setCredentialId(json.rawId)
       if (json?.response) setCreationResponse(json.response)
 
-      setResult(json)
+      setResult(JSON.stringify(json))
     } catch (e) {
       console.error('create error', e)
     }
@@ -63,36 +63,46 @@ export default function Tab() {
 
     console.log('authentication json -', json)
 
-    setResult(json)
+    setResult(JSON.stringify(json))
   }
 
   async function connectPorto() {
     console.info('connecting to porto...')
     try {
+      const { porto } = getPorto()
       const account = await porto.provider.request({
         method: 'wallet_connect',
+        params: [
+          {
+            capabilities: {
+              createAccount: {
+                // timestamp
+                label: `___RN_${Date.now()}`,
+              },
+            },
+          },
+        ],
       })
       console.info(account)
       setPortoAddress(account.accounts.at(0)!.address)
-      setResult({ portoConnect: { addresses: account.accounts! } })
-    } catch (e) {
-      console.error('porto connect error', e)
+      setResult(JSON.stringify(account, undefined, 2))
+    } catch (error) {
+      console.error('porto connect error', error)
     }
   }
 
   async function disconnect() {
     try {
-      await porto.provider.request({
-        method: 'wallet_disconnect',
-      })
+      const { porto } = getPorto()
+      await porto.provider.request({ method: 'wallet_disconnect' })
       setPortoAddress(null)
-      setResult({ portoDisconnect: true })
+      setResult('disconnected')
     } catch (error) {
       console.error('porto disconnect error', error)
     }
   }
 
-  const writeBlob = async () => {
+  async function writeBlob() {
     console.log('user credential id -', credentialId)
     if (!credentialId) {
       alert(
@@ -121,10 +131,10 @@ export default function Tab() {
     const written = json?.clientExtensionResults?.largeBlob?.written
     if (written) alert('This blob was written to the passkey')
 
-    setResult(json)
+    setResult(JSON.stringify(json))
   }
 
-  const readBlob = async () => {
+  async function readBlob() {
     const json = await passkey.get({
       rpId: rp.id,
       challenge,
@@ -139,7 +149,7 @@ export default function Tab() {
     const blob = json?.clientExtensionResults?.largeBlob?.blob
     if (blob) alert('This passkey has blob', base64UrlToString(blob))
 
-    setResult(json)
+    setResult(JSON.stringify(json))
   }
 
   // biome-ignore lint/correctness/noNestedComponentDefinitions: _
@@ -174,10 +184,8 @@ export default function Tab() {
             <Pressable
               className="bg-white p-10 rounded-[5px] w-[45%] items-center justify-center text-center"
               onPress={() => {
-                alert(
-                  'Public Key',
-                  creationResponse?.getPublicKey() as Uint8Array as any,
-                )
+                alert('Public Key', 'Check logs')
+                console.log('Public Key', result)
               }}
             >
               <Text>Get PublicKey</Text>

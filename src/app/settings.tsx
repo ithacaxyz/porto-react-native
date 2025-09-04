@@ -6,7 +6,7 @@ export default function Tab() {
   return (
     <View className="flex-1 justify-center items-center p-14">
       <Header />
-      <Text>Tab [Settings]</Text>
+      <Text className="text-black dark:text-white">Tab [Settings]</Text>
     </View>
   )
 }
@@ -24,8 +24,10 @@ function Header() {
     setup()
   }, [db.getFirstAsync])
   return (
-    <View className="flex-1 justify-center items-center p-14">
-      <Text className="text-[20px] font-bold">SQLite version: {version}</Text>
+    <View className="flex-1 justify-center items-center p-14 text-black dark:text-white">
+      <Text className="text-[20px] font-bold text-black dark:text-white">
+        SQLite version: {version}
+      </Text>
     </View>
   )
 }

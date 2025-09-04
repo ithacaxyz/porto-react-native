@@ -36,8 +36,23 @@ export default (context: ConfigContext): ExpoConfig => ({
     typedRoutes: true,
   },
   plugins: [
-    ['expo-dev-client', { launchMode: 'most-recent' }],
     ['expo-router'],
+    ['expo-dev-client', { launchMode: 'most-recent' }],
+    [
+      'expo-build-properties',
+      {
+        android: {
+          packagingOptions: {
+            pickFirst: [
+              'lib/x86/libcrypto.so',
+              'lib/x86_64/libcrypto.so',
+              'lib/arm64-v8a/libcrypto.so',
+              'lib/armeabi-v7a/libcrypto.so',
+            ],
+          },
+        },
+      },
+    ],
     [
       'expo-sqlite',
       {

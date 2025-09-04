@@ -40,7 +40,7 @@ const rpDomain = webcredentialsEntry
   ?.replace('webcredentials:', '')
   ?.split('?')
   .at(0)
-console.info(rpDomain)
+
 export const rp = {
   id: Platform.select({
     web: undefined,
@@ -66,3 +66,11 @@ export const authenticatorSelection = {
   userVerification: 'required',
   residentKey: 'required',
 } satisfies AuthenticatorSelectionCriteria
+
+export function toArrayBufferFromB64Url(input: string) {
+  return base64.toArrayBuffer(input, true)
+}
+
+export function toB64UrlFromArrayBuffer(input: ArrayBuffer) {
+  return bufferToBase64URLString(input)
+}

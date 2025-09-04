@@ -26,7 +26,8 @@
     "server/**/*",
     "./scripts/**/*",
     ".expo/types/**/*.ts",
-    "nativewind-env.d.ts"
+    "nativewind-env.d.ts",
+    "expo-env.d.ts"
   ],
   "files": [
     "env.d.ts",

@@ -1,4 +1,11 @@
-import { View, Text, Platform, Pressable, ScrollView } from 'react-native'
+import {
+  View,
+  Text,
+  Button,
+  Platform,
+  Pressable,
+  ScrollView,
+} from 'react-native'
 import {
   rp,
   user,
@@ -10,6 +17,7 @@ import {
 } from '#lib/crypto.ts'
 import * as React from 'react'
 import alert from '#lib/alert.ts'
+import { porto } from '#lib/porto.ts'
 import * as passkey from 'react-native-passkeys'
 
 export default function Tab() {
@@ -18,8 +26,9 @@ export default function Tab() {
     NonNullable<Awaited<ReturnType<typeof passkey.create>>>['response'] | null
   >(null)
   const [credentialId, setCredentialId] = React.useState('')
+  const [portoAddress, setPortoAddress] = React.useState<string | null>(null)
 
-  const createPasskey = async () => {
+  async function createPasskey() {
     try {
       const json = await passkey.create({
         challenge,
@@ -43,7 +52,7 @@ export default function Tab() {
     }
   }
 
-  const authenticatePasskey = async () => {
+  async function authenticatePasskey() {
     const json = await passkey.get({
       rpId: rp.id,
       challenge,
@@ -55,6 +64,32 @@ export default function Tab() {
     console.log('authentication json -', json)
 
     setResult(json)
+  }
+
+  async function connectPorto() {
+    console.info('connecting to porto...')
+    try {
+      const account = await porto.provider.request({
+        method: 'wallet_connect',
+      })
+      console.info(account)
+      setPortoAddress(account.accounts.at(0)!.address)
+      setResult({ portoConnect: { addresses: account.accounts! } })
+    } catch (e) {
+      console.error('porto connect error', e)
+    }
+  }
+
+  async function disconnect() {
+    try {
+      await porto.provider.request({
+        method: 'wallet_disconnect',
+      })
+      setPortoAddress(null)
+      setResult({ portoDisconnect: true })
+    } catch (error) {
+      console.error('porto disconnect error', error)
+    }
   }
 
   const writeBlob = async () => {
@@ -116,37 +151,25 @@ export default function Tab() {
 
   return (
     <View className="flex-1 w-full">
-      <ScrollView contentContainerClassName="grow items-center justify-end">
-        <Text>Tab [Home]</Text>
-        <Text>
+      <ScrollView contentContainerClassName="grow items-center justify-center">
+        <Text className="text-black dark:text-white text-xl font-extrabold">
+          Tab [Home]
+        </Text>
+        <Text className="text-black dark:text-white">
           Passkeys are {passkey.isSupported() ? 'supported' : 'not supported'}
         </Text>
         <UserCredentials />
-        <View className="p-24 flex-row flex-wrap items-center gap-y-4 justify-evenly">
-          <Pressable
-            className="bg-white p-10 rounded-[5px] w-[45%] items-center justify-center text-center"
-            onPress={createPasskey}
-          >
-            <Text>Create</Text>
-          </Pressable>
-          <Pressable
-            className="bg-white p-10 rounded-[5px] w-[45%] items-center justify-center text-center"
-            onPress={authenticatePasskey}
-          >
-            <Text>Authenticate</Text>
-          </Pressable>
-          <Pressable
-            className="bg-white p-10 rounded-[5px] w-[45%] items-center justify-center text-center"
-            onPress={writeBlob}
-          >
-            <Text>Add Blob</Text>
-          </Pressable>
-          <Pressable
-            className="bg-white p-10 rounded-[5px] w-[45%] items-center justify-center text-center"
-            onPress={readBlob}
-          >
-            <Text>Read Blob</Text>
-          </Pressable>
+        <View className="p-16 grid grid-cols-2 grid-rows-2 items-center gap-4 justify-evenly *:border-2 *:w-full">
+          <Button title="connect" onPress={connectPorto} />
+          <Button title="disconnect" onPress={disconnect} />
+          <Button title="Create" onPress={createPasskey} />
+
+          <Button title="Authenticate" onPress={authenticatePasskey} />
+
+          <Button title="Add Blob" onPress={writeBlob} />
+
+          <Button title="Read Blob" onPress={readBlob} />
+
           {creationResponse && (
             <Pressable
               className="bg-white p-10 rounded-[5px] w-[45%] items-center justify-center text-center"
@@ -161,11 +184,18 @@ export default function Tab() {
             </Pressable>
           )}
         </View>
-        {result && (
-          <Text className="max-w-[80%]">
-            Result {JSON.stringify(result, null, 2)}
-          </Text>
-        )}
+        <View className="text-black dark:text-white">
+          {result && (
+            <Text className="max-w-[80%] text-black dark:text-white">
+              Result {JSON.stringify(result, null, 2)}
+            </Text>
+          )}
+          {portoAddress && (
+            <Text className="max-w-[80%] text-black dark:text-white">
+              Porto Address: {portoAddress}
+            </Text>
+          )}
+        </View>
       </ScrollView>
     </View>
   )

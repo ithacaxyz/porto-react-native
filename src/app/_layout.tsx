@@ -9,14 +9,14 @@ if (typeof Buffer === 'undefined') {
 import * as React from 'react'
 import * as SQLite from 'expo-sqlite'
 import { Text, View } from 'react-native'
-import { DefaultTheme, ThemeProvider } from '@react-navigation/native'
+import { DarkTheme, ThemeProvider } from '@react-navigation/native'
 import { Icon, Label, NativeTabs } from 'expo-router/unstable-native-tabs'
 
 export { ErrorBoundary } from 'expo-router'
 
 export default function RootLayout() {
   return (
-    <ThemeProvider value={DefaultTheme}>
+    <ThemeProvider value={DarkTheme}>
       <React.Suspense fallback={<Text>Loading...</Text>}>
         <SQLite.SQLiteProvider
           databaseName="porto-rn.db"

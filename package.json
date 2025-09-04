@@ -61,6 +61,8 @@
     "@types/base-64": "^1.0.2",
     "@types/bun": "^1.2.21",
     "@types/node": "^24.3.0",
+    "babel-plugin-module-resolver": "^5.0.2",
+    "babel-plugin-transform-import-meta": "^2.3.3",
     "@types/react": "^19.1.12",
     "@types/react-dom": "^19.1.9",
     "nypm": "^0.6.1",

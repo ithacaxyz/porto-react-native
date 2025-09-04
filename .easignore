@@ -41,3 +41,14 @@ credentials.json
 !.env.example
 
 worker
+.vscode
+.zed
+scripts
+.env.example
+.gitattributes
+env.d.ts
+justfile
+reset.d.ts
+
+android
+ios

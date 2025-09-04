@@ -10,21 +10,23 @@
     "strictNullChecks": true,
     "noUncheckedIndexedAccess": true,
     "allowImportingTsExtensions": true,
+    "resolvePackageJsonExports": true,
+    "resolvePackageJsonImports": true,
+    "resolveJsonModule": true,
     "noPropertyAccessFromIndexSignature": true,
     "baseUrl": ".",
     "paths": {
       "#*": [
-        "./*"
+        "./src/*"
       ]
     }
   },
   "include": [
-    "app/**/*",
+    "src/**/*",
+    "expo-env.d.ts",
     "./scripts/**/*",
-    "_/App.tsx",
-    "_/modal.tsx",
     ".expo/types/**/*.ts",
-    "expo-env.d.ts"
+    "nativewind-env.d.ts"
   ],
   "files": [
     "env.d.ts",
@@ -32,7 +34,9 @@
     "reset.d.ts",
     "app.config.ts",
     "metro.config.js",
-    "babel.config.js"
+    "tailwind.config.ts",
+    "babel.config.js",
+    "nativewind-env.d.ts"
   ],
   "exclude": [
     "**/_/**",

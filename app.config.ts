@@ -1,18 +1,25 @@
 import 'tsx/cjs'
 import type { ExpoConfig, ConfigContext } from 'expo/config'
 
+const scheme = 'porto-rn'
+const associatedDomains = [
+  'o.bun-alewife.ts.net',
+  '6ddb0ea71139.ngrok.app',
+].map((hostname) => `webcredentials:${hostname}`)
+
 export default (context: ConfigContext): ExpoConfig => ({
   ...context.config,
-  slug: 'porto-rn',
-  name: 'porto-rn',
+  slug: scheme,
+  name: scheme,
+  scheme: scheme,
   version: '1.0.0',
-  scheme: 'porto-rn',
+  userInterfaceStyle: 'automatic',
   newArchEnabled: true,
   ios: {
     supportsTablet: true,
     appleTeamId: 'Q7767Q7TRJ',
     bundleIdentifier: 'org.name.portorn',
-    associatedDomains: ['webcredentials:6d0b920b8203.ngrok.app?mode=developer'],
+    associatedDomains: ['webcredentials:o.bun-alewife.ts.net'],
   },
   android: {
     package: 'org.name.portorn',

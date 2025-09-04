@@ -18,3 +18,7 @@ clear:
 doctor:
     bun expo install --fix
     bun x expo-doctor
+
+polyglot-postinstall:
+    cd ios && pod install && cd ..
+    

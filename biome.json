@@ -60,10 +60,12 @@
         "useTemplate": "off",
         "noNonNullAssertion": "off",
         "useNamingConvention": "off",
-        "noUnusedTemplateLiteral": "off"
+        "noUnusedTemplateLiteral": "off",
+        "useNodejsImportProtocol": "off"
       },
       "suspicious": {
         "noExplicitAny": "off",
+        "noUnknownAtRules": "off",
         "noEmptyInterface": "off",
         "noConfusingVoidType": "off",
         "noAssignInExpressions": "off"
@@ -91,6 +93,12 @@
     }
   },
   "css": {
+    "assist": {
+      "enabled": true
+    },
+    "parser": {
+      "allowWrongLineComments": true
+    },
     "linter": {
       "enabled": true
     },

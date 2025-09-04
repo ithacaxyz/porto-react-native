@@ -1,10 +1,10 @@
 import * as React from 'react'
 import * as SQLite from 'expo-sqlite'
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text } from 'react-native'
 
 export default function Tab() {
   return (
-    <View style={styles.container}>
+    <View className="flex-1 justify-center items-center p-14">
       <Header />
       <Text>Tab [Settings]</Text>
     </View>
@@ -24,22 +24,8 @@ function Header() {
     setup()
   }, [db.getFirstAsync])
   return (
-    <View style={styles.headerContainer}>
-      <Text style={styles.headerText}>SQLite version: {version}</Text>
+    <View className="flex-1 justify-center items-center p-14">
+      <Text className="text-[20px] font-bold">SQLite version: {version}</Text>
     </View>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 14,
-  },
-  headerContainer: {},
-  headerText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-})

@@ -7,10 +7,13 @@ const server = Bun.serve({
       GET: async (request, server) => {
         const ipAddress = server.requestIP(request)
         console.info(`Request from ${ipAddress?.address}`)
-
-        return Response.json(
-          await Bun.file('./apple-app-site-association').json(),
-        )
+        const fileContent = await Bun.file(
+          './apple-app-site-association',
+        ).text()
+        console.info(`File content: ${fileContent}`)
+        return new Response(fileContent, {
+          headers: { 'Content-Type': 'application/json' },
+        })
       },
     },
     '/.well-known/assetlinks.json': {
@@ -18,7 +21,11 @@ const server = Bun.serve({
         const ipAddress = server.requestIP(request)
         console.info(`Request from ${ipAddress?.address}`)
 
-        return Response.json(await Bun.file('./assetlinks.json').json())
+        const fileContent = await Bun.file('./assetlinks.json').text()
+        console.info(`File content: ${fileContent}`)
+        return new Response(fileContent, {
+          headers: { 'Content-Type': 'application/json' },
+        })
       },
     },
   },

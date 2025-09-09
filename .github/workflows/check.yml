@@ -30,10 +30,13 @@ jobs:
 
       - name: 'Install Dependencies'
         run: |
-          bun add --global yarn@1.22.22
           yarn install --frozen-lockfile
 
+          sudo apt-get update
+          sudo apt-get install --yes --no-install-recommends fish
+
       - name: 'Expo Doctor'
+        shell: fish {0}
         run: bun x rust-just@latest doctor
 
       - name: 'Lint & Format'

@@ -1,17 +1,18 @@
 import * as NYPM from 'nypm'
 
 NYPM.dedupeDependencies({
-  // dry: true,
   cwd: process.cwd(),
-  packageManager: 'bun',
+  packageManager: 'yarn',
   recreateLockfile: true,
 })
-  .then((result) => {
-    console.log(result)
+  .then(() => {
+    console.log('dependencies deduplicated ▶︎✨')
+    process.exit(0)
   })
   .catch((error) => {
     console.error(error)
+    process.exit(1)
   })
-  .finally(() => {
+  .finally(() => 
     process.exit(0)
-  })
+  )

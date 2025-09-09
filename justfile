@@ -13,11 +13,15 @@ build:
     echo "build"
 
 clear:
-    bun expo start --clear
+    yarn expo start --clear
 
 doctor:
-    bun expo install --fix
-    bun x expo-doctor
+    yarn expo install --fix
+    bun x expo-doctor --verbose --yarn
 
 polyglot-postinstall:
     cd ios && pod install && cd ..
+
+android-cert:
+    keytool -genkey -v -keystore debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000
+    keytool -list -v -keystore ~/.android/debug.keystore -alias androiddebugkey -storepass android -keypass android | grep SHA256

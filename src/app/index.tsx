@@ -18,6 +18,7 @@ import {
 import * as React from 'react'
 import alert from '#lib/alert.ts'
 import { getPorto } from '#lib/porto.ts'
+import { WebView } from 'react-native-webview'
 import * as passkey from 'react-native-passkeys'
 
 export default function Tab() {
@@ -69,22 +70,23 @@ export default function Tab() {
   async function connectPorto() {
     console.info('connecting to porto...')
     try {
-      const { porto } = getPorto()
-      const account = await porto.provider.request({
+      const { connect, porto } = await getPorto()
+      const response = await porto.provider.request({
         method: 'wallet_connect',
         params: [
           {
             capabilities: {
               createAccount: {
-                // timestamp
                 label: `___RN_${Date.now()}`,
               },
             },
           },
         ],
       })
+      console.info('response', response)
+      const account = response.accounts.at(0)!
       console.info(account)
-      setPortoAddress(account.accounts.at(0)!.address)
+      setPortoAddress(account.address)
       setResult(JSON.stringify(account, undefined, 2))
     } catch (error) {
       console.error('porto connect error', error)
@@ -93,7 +95,7 @@ export default function Tab() {
 
   async function disconnect() {
     try {
-      const { porto } = getPorto()
+      const { porto } = await getPorto()
       await porto.provider.request({ method: 'wallet_disconnect' })
       setPortoAddress(null)
       setResult('disconnected')
@@ -154,10 +156,26 @@ export default function Tab() {
 
   // biome-ignore lint/correctness/noNestedComponentDefinitions: _
   const UserCredentials = () => (
-    <Text className={`${credentialId ? 'block' : 'hidden'}`}>
+    <Text
+      className={`${credentialId ? 'block' : 'hidden'} text-black dark:text-white`}
+    >
       User Credential ID: {credentialId}
     </Text>
   )
+
+  // biome-ignore lint/correctness/noNestedComponentDefinitions: _
+  const RawJson = () =>
+    Platform.OS === 'web' ? (
+      <Text className="max-w-[80%] text-black dark:text-white text-sm font-mono overflow-auto">
+        {result}
+      </Text>
+    ) : (
+      <WebView
+        originWhitelist={['*']}
+        className="h-full w-full text-black dark:text-white"
+        source={{ html: /* html */ `<pre>${result}</pre>` }}
+      />
+    )
 
   return (
     <View className="flex-1 w-full">
@@ -169,8 +187,19 @@ export default function Tab() {
           Passkeys are {passkey.isSupported() ? 'supported' : 'not supported'}
         </Text>
         <UserCredentials />
+        {portoAddress && (
+          <Text className="max-w-[80%] text-black dark:text-white text-sm font-mono overflow-auto">
+            Porto Address: {portoAddress}
+          </Text>
+        )}
         <View className="p-16 grid grid-cols-2 grid-rows-2 items-center gap-4 justify-evenly *:border-2 *:w-full">
           <Button title="connect" onPress={connectPorto} />
+          {/* <Pressable
+            onPress={connectPorto}
+            className="bg-white p-10 rounded-[5px] w-[45%] items-center justify-center text-center"
+          >
+            <Text>connect</Text>
+          </Pressable> */}
           <Button title="disconnect" onPress={disconnect} />
           <Button title="Create" onPress={createPasskey} />
 
@@ -192,17 +221,8 @@ export default function Tab() {
             </Pressable>
           )}
         </View>
-        <View className="text-black dark:text-white">
-          {result && (
-            <Text className="max-w-[80%] text-black dark:text-white">
-              Result {JSON.stringify(result, null, 2)}
-            </Text>
-          )}
-          {portoAddress && (
-            <Text className="max-w-[80%] text-black dark:text-white">
-              Porto Address: {portoAddress}
-            </Text>
-          )}
+        <View className="text-black dark:text-white text-center items-center max-w-full w-full">
+          {result && <RawJson />}
         </View>
       </ScrollView>
     </View>

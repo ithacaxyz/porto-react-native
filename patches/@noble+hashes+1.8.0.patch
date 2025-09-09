@@ -1,0 +1,56 @@
+diff --git a/node_modules/@noble/hashes/crypto.js b/node_modules/@noble/hashes/crypto.js
+index 8226391..ad10e1f 100644
+--- a/node_modules/@noble/hashes/crypto.js
++++ b/node_modules/@noble/hashes/crypto.js
+@@ -1,5 +1,10 @@
+ "use strict";
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.crypto = void 0;
+-exports.crypto = typeof globalThis === 'object' && 'crypto' in globalThis ? globalThis.crypto : undefined;
++// Lazy evaluation for React Native compatibility
++Object.defineProperty(exports, 'crypto', {
++  get: function() {
++    return typeof globalThis === 'object' && 'crypto' in globalThis ? globalThis.crypto : undefined;
++  }
++});
+ //# sourceMappingURL=crypto.js.map
+\ No newline at end of file
+diff --git a/node_modules/@noble/hashes/package.json b/node_modules/@noble/hashes/package.json
+index 4d2fc73..1acb2d1 100644
+--- a/node_modules/@noble/hashes/package.json
++++ b/node_modules/@noble/hashes/package.json
+@@ -54,10 +54,12 @@
+     "./crypto": {
+       "node": {
+         "import": "./esm/cryptoNode.js",
+-        "default": "./cryptoNode.js"
++        "default": "./cryptoNode.js",
++        "require": "./cryptoNode.js"
+       },
+       "import": "./esm/crypto.js",
+-      "default": "./crypto.js"
++      "default": "./crypto.js",
++      "require": "./crypto.js"
+     },
+     "./_assert": {
+       "import": "./esm/_assert.js",
+diff --git a/node_modules/@noble/hashes/utils.js b/node_modules/@noble/hashes/utils.js
+index aed9199..a8a332f 100644
+--- a/node_modules/@noble/hashes/utils.js
++++ b/node_modules/@noble/hashes/utils.js
+@@ -301,13 +301,6 @@ exports.wrapConstructorWithOpts = createOptHasher;
+ exports.wrapXOFConstructorWithOpts = createXOFer;
+ /** Cryptographically secure PRNG. Uses internal OS-level `crypto.getRandomValues`. */
+ function randomBytes(bytesLength = 32) {
+-    if (crypto_1.crypto && typeof crypto_1.crypto.getRandomValues === 'function') {
+-        return crypto_1.crypto.getRandomValues(new Uint8Array(bytesLength));
+-    }
+-    // Legacy Node.js compatibility
+-    if (crypto_1.crypto && typeof crypto_1.crypto.randomBytes === 'function') {
+-        return Uint8Array.from(crypto_1.crypto.randomBytes(bytesLength));
+-    }
+-    throw new Error('crypto.getRandomValues must be defined');
++    return require('expo-crypto').getRandomValues(new Uint8Array(bytesLength));
+ }
+ //# sourceMappingURL=utils.js.map
+\ No newline at end of file

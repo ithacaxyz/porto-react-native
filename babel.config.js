@@ -16,6 +16,16 @@ module.exports = (api) => {
     plugins: [
       'babel-plugin-transform-import-meta',
       'react-native-worklets/plugin',
+      [
+        'module-resolver',
+        {
+          alias: {
+            stream: 'readable-stream',
+            crypto: 'react-native-quick-crypto',
+            buffer: '@craftzdog/react-native-buffer',
+          },
+        },
+      ],
     ],
   }
 }

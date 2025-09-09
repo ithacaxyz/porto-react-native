@@ -40,5 +40,6 @@ credentials.json
 .env.*
 !.env.example
 
-ios
-android
+# ios
+# android
+*.apk

@@ -36,6 +36,7 @@ export default (context: ConfigContext): ExpoConfig => ({
     typedRoutes: true,
   },
   plugins: [
+    ['patch-project'],
     ['expo-router'],
     ['expo-dev-client', { launchMode: 'most-recent' }],
     [
@@ -43,12 +44,7 @@ export default (context: ConfigContext): ExpoConfig => ({
       {
         android: {
           packagingOptions: {
-            pickFirst: [
-              'lib/x86/libcrypto.so',
-              'lib/x86_64/libcrypto.so',
-              'lib/arm64-v8a/libcrypto.so',
-              'lib/armeabi-v7a/libcrypto.so',
-            ],
+            pickFirst: ['**/libcrypto.so'],
           },
         },
       },

@@ -4,6 +4,7 @@ import { encode as btoa } from 'base-64'
 
 import Constants from 'expo-constants'
 import * as Application from 'expo-application'
+import * as Crypto from 'expo-crypto'
 
 export function bufferToBase64URLString(buffer: ArrayBuffer) {
   const bytes = new Uint8Array(buffer)
@@ -23,6 +24,11 @@ export function base64UrlToString(base64urlString: Base64URLString) {
   return base64.toString(base64urlString, true)
 }
 
+// Use Expo's randomUUID instead of the deprecated crypto.randomUUID
+export function randomUUID() {
+  return Crypto.randomUUID()
+}
+
 export const bundleId = Application.applicationId
   ?.split('.')
   .reverse()
@@ -32,14 +38,8 @@ export const bundleId = Application.applicationId
 // Prefer the `webcredentials:` entry to keep native passkeys aligned
 const associatedDomains: string[] | undefined = (Constants.expoConfig as any)
   ?.ios?.associatedDomains
-const webcredentialsEntry = associatedDomains?.find((d) =>
-  d.startsWith('webcredentials:'),
-)
-// Strip the prefix and any query string (e.g. `?mode=developer`)
-const rpDomain = webcredentialsEntry
-  ?.replace('webcredentials:', '')
-  ?.split('?')
-  .at(0)
+
+const rpDomain = process.env.EXPO_PUBLIC_SERVER_DOMAIN
 
 export const rp = {
   id: Platform.select({

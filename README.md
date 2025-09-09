@@ -161,14 +161,6 @@ keytool -list -v -keystore your-release-key.keystore -alias your-alias
    - `https://yourdomain.com/.well-known/assetlinks.json`
 3. Test deep links and passkey functionality
 
-## Tech Stack
-
-- React Native with Expo
-- Porto for Web3 authentication
-- React Native Passkeys for biometric authentication
-- TypeScript
-- Biome for code formatting and linting
-
 ## Useful Links
 
 - [Expo Documentation](https://docs.expo.dev/)

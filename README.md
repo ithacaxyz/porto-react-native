@@ -2,11 +2,11 @@
 
 A React Native application built with Expo v54 and [Porto](https://porto.sh) for Web3 authentication and passkey integration.
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) (v18 or later)
+- [Node.js](https://nodejs.org/) (LTS)
 - [Yarn Classic](https://classic.yarnpkg.com/) (v1.22+)
 - [Expo CLI](https://docs.expo.dev/get-started/installation/)
 - For iOS development: Xcode and iOS Simulator
@@ -26,7 +26,7 @@ A React Native application built with Expo v54 and [Porto](https://porto.sh) for
    cd ios && pod install && cd ..
    ```
 
-## 📱 Development
+## Development
 
 ### Running the App
 
@@ -47,7 +47,7 @@ A React Native application built with Expo v54 and [Porto](https://porto.sh) for
 - `just android-device` - Mirror Android device screen
 - `just android-cert` - Generate Android debug certificate
 
-## 🔧 Configuration for Forks
+## Configuration for Forks
 
 When forking this project, update the following fields in `app.config.ts`:
 
@@ -83,7 +83,7 @@ export default (context: ConfigContext): ExpoConfig => ({
 3. **EAS Project ID**: Create project at [expo.dev](https://expo.dev) and copy the project ID
 4. **Associated Domain**: Your server domain where you'll host the app verification files
 
-## 🌐 Server Directory (`./server`)
+## Server Directory (`./server`)
 
 The `./server` directory contains a [Bun](https://bun.sh) server that serves **App Verification Files** required for:
 
@@ -104,7 +104,7 @@ The server runs on the port specified by the `PORT` environment variable and ser
 just deploy-server  # Deploys to Railway
 ```
 
-## 🍎 Apple Associated Domains Setup
+## Apple Associated Domains Setup
 
 To enable Universal Links and passkey authentication:
 
@@ -165,29 +165,7 @@ keytool -list -v -keystore your-release-key.keystore -alias your-alias
    - `https://yourdomain.com/.well-known/assetlinks.json`
 3. Test deep links and passkey functionality
 
-## 🛠 Tech Stack
-
-- **Framework**: [Expo](https://expo.dev) v54 (preview)
-- **Package Manager**: [Yarn Classic](https://classic.yarnpkg.com/) v1.22+
-- **Runtime**: [React Native](https://reactnative.dev) 0.81.1
-- **Navigation**: [Expo Router](https://docs.expo.dev/router/introduction/)
-- **Styling**: [NativeWind](https://www.nativewind.dev/) (Tailwind CSS)
-- **Authentication**: [Porto](https://porto.sh) + Passkeys
-- **Database**: [Expo SQLite](https://docs.expo.dev/versions/latest/sdk/sqlite/)
-- **Server**: [Bun](https://bun.sh)
-- **Code Quality**: [Biome](https://biomejs.dev/)
-
-## 📚 Key Features
-
-- ✅ **Passkey Authentication** - Secure, passwordless auth
-- ✅ **Web3 Integration** - Porto for blockchain interactions  
-- ✅ **Cross-Platform** - iOS, Android, and Web support
-- ✅ **Universal Links** - Deep linking across platforms
-- ✅ **SQLite Database** - Local data storage with encryption
-- ✅ **Modern Navigation** - File-based routing with Expo Router
-- ✅ **Type Safety** - Full TypeScript support
-
-## 🔗 Useful Links
+## Useful Links
 
 - [Expo Documentation](https://docs.expo.dev/)
 - [Porto Documentation](https://context7.com/ithacaxyz/porto/llms.txt)

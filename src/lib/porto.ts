@@ -4,10 +4,10 @@ import {
   toB64UrlFromArrayBuffer,
 } from '#lib/crypto.ts'
 import { Platform } from 'react-native'
+import { Porto, Mode, Storage } from 'porto'
 import * as passkey from 'react-native-passkeys'
 import { base, baseSepolia } from 'porto/Chains'
 import { custom, createWalletClient } from 'viem'
-import { Porto, Mode, Storage } from 'porto'
 
 async function createFn(options: any): Promise<any> {
   const publicKey = options?.publicKey || options

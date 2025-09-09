@@ -16,4 +16,22 @@ config.server.enhanceMiddleware = (middleware) => {
   }
 }
 
+config.resolver.unstable_enablePackageExports = true
+config.resolver.unstable_conditionsByPlatform = true
+
+/**
+ * @type {import('expo/metro-config').MetroConfig['resolver']['resolveRequest']}
+ */
+config.resolver.resolveRequest = (context, moduleName, platform) => {
+  if (moduleName.startsWith('ox')) {
+    console.info(moduleName, platform)
+    return {
+      type: 'sourceFile',
+      filePath: require.resolve(moduleName),
+    }
+  }
+
+  return context.resolveRequest?.(context, moduleName, platform)
+}
+
 module.exports = withNativeWind(config, { input: './src/global.css' })

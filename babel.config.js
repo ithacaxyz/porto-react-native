@@ -5,7 +5,11 @@ module.exports = (api) => {
     presets: [
       [
         'babel-preset-expo',
-        { unstable_transformImportMeta: true, jsxImportSource: 'nativewind' },
+        {
+          unstable_transformImportMeta: true,
+          jsxImportSource: 'nativewind',
+          reanimated: false,
+        },
       ],
       'nativewind/babel',
     ],

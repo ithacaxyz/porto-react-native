@@ -40,6 +40,4 @@ body {
   body {
     background-color: #121113;
   }
-}
-
-`
+}`

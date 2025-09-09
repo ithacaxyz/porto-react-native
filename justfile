@@ -13,7 +13,7 @@ build:
     echo "build"
 
 clear:
-  bun expo start --clear
+    bun expo start --clear
 
 doctor:
     bun expo install --fix
@@ -21,4 +21,3 @@ doctor:
 
 polyglot-postinstall:
     cd ios && pod install && cd ..
-    

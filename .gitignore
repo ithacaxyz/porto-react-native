@@ -40,5 +40,20 @@ credentials.json
 .env.*
 !.env.example
 
-ios
-android
+# ios
+# android
+*.apk
+.idea
+
+*.jks
+*.keystore
+*.p12
+*.p8
+*.mobileprovision
+*.cer
+*.crt
+*.pem
+*.key
+*.csr
+*.crl
+*.pem

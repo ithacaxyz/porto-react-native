@@ -1,4 +1,5 @@
 {
+  "$schema": "https://raw.githubusercontent.com/expo/eas-cli/refs/heads/main/packages/eas-json/schema/eas.schema.json",
   "cli": {
     "version": ">= 16.18.0",
     "appVersionSource": "remote"

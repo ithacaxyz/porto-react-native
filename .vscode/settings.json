@@ -11,5 +11,6 @@
     "class",
     "className",
     "headerClassName"
-  ]
+  ],
+  "java.configuration.updateBuildConfiguration": "interactive"
 }

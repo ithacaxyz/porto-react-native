@@ -1,4 +1,11 @@
-import { View, Text, Platform, Pressable, ScrollView } from 'react-native'
+import {
+  View,
+  Text,
+  Button,
+  Platform,
+  Pressable,
+  ScrollView,
+} from 'react-native'
 import {
   rp,
   user,
@@ -10,16 +17,20 @@ import {
 } from '#lib/crypto.ts'
 import * as React from 'react'
 import alert from '#lib/alert.ts'
+import { WalletActions } from 'porto/viem'
+import { walletClient } from '#lib/porto.ts'
+import { WebView } from 'react-native-webview'
 import * as passkey from 'react-native-passkeys'
 
 export default function Tab() {
-  const [result, setResult] = React.useState<any>(null)
-  const [creationResponse, setCreationResponse] = React.useState<
-    NonNullable<Awaited<ReturnType<typeof passkey.create>>>['response'] | null
-  >(null)
   const [credentialId, setCredentialId] = React.useState('')
+  const [result, setResult] = React.useState<string | null>(null)
+  const [portoAddress, setPortoAddress] = React.useState<string | null>(null)
+  const [creationResponse, setCreationResponse] = React.useState<string | null>(
+    null,
+  )
 
-  const createPasskey = async () => {
+  async function createPasskey() {
     try {
       const json = await passkey.create({
         challenge,
@@ -37,13 +48,13 @@ export default function Tab() {
       if (json?.rawId) setCredentialId(json.rawId)
       if (json?.response) setCreationResponse(json.response)
 
-      setResult(json)
+      setResult(JSON.stringify(json))
     } catch (e) {
       console.error('create error', e)
     }
   }
 
-  const authenticatePasskey = async () => {
+  async function authenticatePasskey() {
     const json = await passkey.get({
       rpId: rp.id,
       challenge,
@@ -54,10 +65,45 @@ export default function Tab() {
 
     console.log('authentication json -', json)
 
-    setResult(json)
+    setResult(JSON.stringify(json))
   }
 
-  const writeBlob = async () => {
+  async function connectPorto() {
+    console.info('connecting to porto...')
+    try {
+      const response = await WalletActions.connect(walletClient, {
+        createAccount: {
+          label:
+            Platform.OS === 'web' ? undefined : `___Porto_RN_${Date.now()}`,
+        },
+      })
+
+      const account = response.accounts.at(0)!
+      console.info('\n[porto] wallet_connect address:', account.address, '\n')
+      console.info(
+        '\n[porto] wallet_connect chainIds:',
+        response.chainIds,
+        '\n',
+      )
+      setPortoAddress(account.address)
+      setResult(JSON.stringify(account, undefined, 2))
+    } catch (error) {
+      console.error('porto connect error', error)
+    }
+  }
+
+  async function disconnect() {
+    try {
+      // await porto.provider.request({ method: 'wallet_disconnect' })
+      await WalletActions.disconnect(walletClient)
+      setPortoAddress(null)
+      setResult('disconnected')
+    } catch (error) {
+      console.error('porto disconnect error', error)
+    }
+  }
+
+  async function writeBlob() {
     console.log('user credential id -', credentialId)
     if (!credentialId) {
       alert(
@@ -86,10 +132,10 @@ export default function Tab() {
     const written = json?.clientExtensionResults?.largeBlob?.written
     if (written) alert('This blob was written to the passkey')
 
-    setResult(json)
+    setResult(JSON.stringify(json))
   }
 
-  const readBlob = async () => {
+  async function readBlob() {
     const json = await passkey.get({
       rpId: rp.id,
       challenge,
@@ -104,68 +150,67 @@ export default function Tab() {
     const blob = json?.clientExtensionResults?.largeBlob?.blob
     if (blob) alert('This passkey has blob', base64UrlToString(blob))
 
-    setResult(json)
+    setResult(JSON.stringify(json))
   }
 
   // biome-ignore lint/correctness/noNestedComponentDefinitions: _
   const UserCredentials = () => (
-    <Text className={`${credentialId ? 'block' : 'hidden'}`}>
+    <Text
+      className={`${credentialId ? 'block' : 'hidden'} text-black dark:text-white`}
+    >
       User Credential ID: {credentialId}
     </Text>
   )
 
+  // biome-ignore lint/correctness/noNestedComponentDefinitions: _
+  const RawJson = () =>
+    Platform.OS === 'web' ? (
+      <Text className="max-w-[80%] text-lg font-mono overflow-auto">
+        {result}
+      </Text>
+    ) : (
+      <WebView
+        originWhitelist={['*']}
+        className="h-full w-full text-lg"
+        source={{ html: /* html */ `<pre>${result}</pre>` }}
+      />
+    )
+
   return (
     <View className="flex-1 w-full">
-      <ScrollView contentContainerClassName="grow items-center justify-end">
-        <Text>Tab [Home]</Text>
-        <Text>
-          Passkeys are {passkey.isSupported() ? 'supported' : 'not supported'}
-        </Text>
+      <ScrollView contentContainerClassName="grow items-center justify-center">
         <UserCredentials />
-        <View className="p-24 flex-row flex-wrap items-center gap-y-4 justify-evenly">
-          <Pressable
-            className="bg-white p-10 rounded-[5px] w-[45%] items-center justify-center text-center"
-            onPress={createPasskey}
-          >
-            <Text>Create</Text>
-          </Pressable>
-          <Pressable
-            className="bg-white p-10 rounded-[5px] w-[45%] items-center justify-center text-center"
-            onPress={authenticatePasskey}
-          >
-            <Text>Authenticate</Text>
-          </Pressable>
-          <Pressable
-            className="bg-white p-10 rounded-[5px] w-[45%] items-center justify-center text-center"
-            onPress={writeBlob}
-          >
-            <Text>Add Blob</Text>
-          </Pressable>
-          <Pressable
-            className="bg-white p-10 rounded-[5px] w-[45%] items-center justify-center text-center"
-            onPress={readBlob}
-          >
-            <Text>Read Blob</Text>
-          </Pressable>
+        {portoAddress && (
+          <Text className="max-w-[80%] text-lg text-center font-mono overflow-auto">
+            Porto Address: {'\n'} {portoAddress}
+          </Text>
+        )}
+        <View className="p-16 grid grid-cols-2 grid-rows-2 items-center gap-4 justify-evenly *:border-2 *:w-full">
+          <Button title="connect" onPress={connectPorto} />
+          <Button title="disconnect" onPress={disconnect} />
+          <Button title="Create" onPress={createPasskey} />
+
+          <Button title="Authenticate" onPress={authenticatePasskey} />
+
+          <Button title="Add Blob" onPress={writeBlob} />
+
+          <Button title="Read Blob" onPress={readBlob} />
+
           {creationResponse && (
             <Pressable
               className="bg-white p-10 rounded-[5px] w-[45%] items-center justify-center text-center"
               onPress={() => {
-                alert(
-                  'Public Key',
-                  creationResponse?.getPublicKey() as Uint8Array as any,
-                )
+                alert('Public Key', 'Check logs')
+                console.log('Public Key', result)
               }}
             >
               <Text>Get PublicKey</Text>
             </Pressable>
           )}
         </View>
-        {result && (
-          <Text className="max-w-[80%]">
-            Result {JSON.stringify(result, null, 2)}
-          </Text>
-        )}
+        <View className="text-lg text-center items-center max-w-full w-full">
+          {result && <RawJson />}
+        </View>
       </ScrollView>
     </View>
   )

@@ -21,7 +21,7 @@ export default (context: ConfigContext): ExpoConfig => ({
     package: 'org.name.portorn',
   },
   web: {
-    output: 'static',
+    output: 'single',
     bundler: 'metro',
   },
   extra: {
@@ -36,8 +36,19 @@ export default (context: ConfigContext): ExpoConfig => ({
     typedRoutes: true,
   },
   plugins: [
-    ['expo-dev-client', { launchMode: 'most-recent' }],
+    ['patch-project'],
     ['expo-router'],
+    ['expo-dev-client', { launchMode: 'most-recent' }],
+    [
+      'expo-build-properties',
+      {
+        android: {
+          packagingOptions: {
+            pickFirst: ['**/libcrypto.so'],
+          },
+        },
+      },
+    ],
     [
       'expo-sqlite',
       {

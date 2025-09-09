@@ -2,6 +2,8 @@ interface EnvironmentVariables {
   readonly NODE_ENV: 'development' | 'production'
   readonly ENVIRONMENT: 'development' | 'production'
 
+  readonly EXPO_PUBLIC_SERVER_DOMAIN: string
+
   readonly PORT: string
 
   readonly APP_NAME: string

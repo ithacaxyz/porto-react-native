@@ -3,9 +3,29 @@ module.exports = (api) => {
   api.cache(true)
   return {
     presets: [
-      ['babel-preset-expo', { jsxImportSource: 'nativewind' }],
+      [
+        'babel-preset-expo',
+        {
+          unstable_transformImportMeta: true,
+          jsxImportSource: 'nativewind',
+          reanimated: false,
+        },
+      ],
       'nativewind/babel',
     ],
-    plugins: ['react-native-worklets/plugin'],
+    plugins: [
+      'babel-plugin-transform-import-meta',
+      'react-native-worklets/plugin',
+      [
+        'module-resolver',
+        {
+          alias: {
+            stream: 'readable-stream',
+            crypto: 'react-native-quick-crypto',
+            buffer: '@craftzdog/react-native-buffer',
+          },
+        },
+      ],
+    ],
   }
 }

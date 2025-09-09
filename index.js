@@ -1,14 +1,11 @@
-// import { registerRootComponent } from 'expo'
-
-// import App from './app/App'
-
-// // registerRootComponent calls AppRegistry.registerComponent('main', () => App);
-// // It also ensures that whether you load the app in Expo Go or in a native build,
-// // the environment is set up appropriately
-// registerRootComponent(App)
-// Import side effects first and services
-
-// Initialize services
+import 'react-native-get-random-values'
+// Ensure global.crypto exists very early for libs that snapshot it at import time.
+try {
+  if (!global.crypto || typeof global.crypto.getRandomValues !== 'function') {
+    const QuickCrypto = require('react-native-quick-crypto')
+    if (QuickCrypto?.install) QuickCrypto.install()
+  }
+} catch {}
 
 // Register app entry through Expo Router
 import 'expo-router/entry'

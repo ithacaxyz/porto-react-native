@@ -6,6 +6,7 @@ const alertPolyfill: typeof Alert.alert = (
   options,
   _extra,
 ) => {
+  if (Platform.OS !== 'web') return Alert.alert
   const result = window.confirm([title, description].filter(Boolean).join('\n'))
 
   if (result) {

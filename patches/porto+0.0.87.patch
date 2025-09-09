@@ -1,0 +1,42 @@
+diff --git a/node_modules/porto/_dist/core/Porto.js b/node_modules/porto/_dist/core/Porto.js
+index 44fd55d..e38804f 100644
+--- a/node_modules/porto/_dist/core/Porto.js
++++ b/node_modules/porto/_dist/core/Porto.js
+@@ -9,6 +9,7 @@ import * as Provider from './internal/provider.js';
+ import * as Utils from './internal/utils.js';
+ import * as Storage from './Storage.js';
+ import { relayUrls } from './Transport.js';
++import * as Crypto from 'expo-crypto';
+ const browser = typeof window !== 'undefined' && typeof document !== 'undefined';
+ export const defaultConfig = {
+     announceProvider: true,
+@@ -75,7 +76,7 @@ export function create(parameters = {}) {
+         getMode() {
+             return mode;
+         },
+-        id: crypto.randomUUID(),
++        id: Crypto.randomUUID(),
+         setMode(i) {
+             destroy?.();
+             mode = i;
+diff --git a/node_modules/porto/core/Porto.ts b/node_modules/porto/core/Porto.ts
+index 2d64583..f9c5e25 100644
+--- a/node_modules/porto/core/Porto.ts
++++ b/node_modules/porto/core/Porto.ts
+@@ -21,6 +21,7 @@ import type { ExactPartial, OneOf } from './internal/types.js'
+ import * as Utils from './internal/utils.js'
+ import * as Storage from './Storage.js'
+ import { relayUrls } from './Transport.js'
++import * as Crypto from 'expo-crypto';
+ 
+ const browser = typeof window !== 'undefined' && typeof document !== 'undefined'
+ 
+@@ -128,7 +129,7 @@ export function create(
+     getMode() {
+       return mode
+     },
+-    id: crypto.randomUUID(),
++    id: Crypto.randomUUID(),
+     setMode(i) {
+       destroy?.()
+       mode = i

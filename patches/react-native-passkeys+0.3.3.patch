@@ -1,0 +1,31 @@
+diff --git a/node_modules/react-native-passkeys/android/build.gradle b/node_modules/react-native-passkeys/android/build.gradle
+index e6e1277..4ecb006 100644
+--- a/node_modules/react-native-passkeys/android/build.gradle
++++ b/node_modules/react-native-passkeys/android/build.gradle
+@@ -87,6 +87,26 @@ android {
+   }
+ }
+ 
++// Ensure Kotlin compiles with JVM target 17 for AGP 8+ / Kotlin 2+
++// (avoids jvmTarget=21 default when JDK 21 is present)
++try {
++  kotlin {
++    jvmToolchain(17)
++  }
++} catch (ignored) {}
++
++tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach { t ->
++  try {
++    if (t.hasProperty('kotlinOptions') && t.kotlinOptions != null) {
++      t.kotlinOptions.jvmTarget = JavaVersion.VERSION_17.majorVersion
++    }
++    if (t.hasProperty('compilerOptions') && t.compilerOptions != null) {
++      def JvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget
++      t.compilerOptions.jvmTarget.set(JvmTarget.JVM_17)
++    }
++  } catch (ignored) {}
++}
++
+ repositories {
+   mavenCentral()
+ }

@@ -4,6 +4,7 @@
   ],
   "compilerOptions": {
     "noUnusedLocals": false,
+    "module": "ESNext",
     "noUnusedParameters": false,
     "exactOptionalPropertyTypes": false,
     "strict": true,
@@ -26,19 +27,15 @@
     "server/**/*",
     "./scripts/**/*",
     ".expo/types/**/*.ts",
-    "nativewind-env.d.ts",
     "expo-env.d.ts"
   ],
   "files": [
     "env.d.ts",
-    "index.js",
+    "index.ts",
     "reset.d.ts",
     "app.config.ts",
-    "expo-env.d.ts",
     "metro.config.js",
-    "babel.config.js",
-    "tailwind.config.ts",
-    "nativewind-env.d.ts"
+    "babel.config.js"
   ],
   "exclude": [
     "**/_/**",

@@ -7,15 +7,11 @@ module.exports = (api) => {
         'babel-preset-expo',
         {
           unstable_transformImportMeta: true,
-          jsxImportSource: 'nativewind',
-          reanimated: false,
         },
       ],
-      'nativewind/babel',
     ],
     plugins: [
       'babel-plugin-transform-import-meta',
-      'react-native-worklets/plugin',
       [
         'module-resolver',
         {

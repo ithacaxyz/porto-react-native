@@ -19,6 +19,55 @@ index 44fd55d..e38804f 100644
          setMode(i) {
              destroy?.();
              mode = i;
+diff --git a/node_modules/porto/_dist/core/internal/modes/relay.js b/node_modules/porto/_dist/core/internal/modes/relay.js
+index ec9059b..9ed6925 100644
+--- a/node_modules/porto/_dist/core/internal/modes/relay.js
++++ b/node_modules/porto/_dist/core/internal/modes/relay.js
+@@ -671,6 +671,7 @@ export function relay(parameters = {}) {
+                 const signature = await Account.sign(account, {
+                     key,
+                     payload: PersonalMessage.getSignPayload(data),
++                    webAuthn,
+                 });
+                 return Erc8010.wrap(client, { address: account.address, signature });
+             },
+@@ -688,6 +689,7 @@ export function relay(parameters = {}) {
+                     payload: TypedData.getSignPayload(data),
+                     // If the domain is the Orchestrator, we don't need to replay-safe sign.
+                     replaySafe: !isOrchestrator,
++                    webAuthn,
+                 });
+                 return isOrchestrator
+                     ? signature
+@@ -717,6 +719,7 @@ export function relay(parameters = {}) {
+                 const signature = await Account.sign(account, {
+                     key,
+                     payload: Hash.keccak256(Hex.fromString(`${email}${token}`)),
++                    webAuthn,
+                 });
+                 return await RelayActions.verifyEmail(client, {
+                     chainId,
+diff --git a/node_modules/porto/_dist/viem/Account.js b/node_modules/porto/_dist/viem/Account.js
+index 5d01e61..38db76b 100644
+--- a/node_modules/porto/_dist/viem/Account.js
++++ b/node_modules/porto/_dist/viem/Account.js
+@@ -92,7 +92,7 @@ export function getKey(account, parameters = {}) {
+  * @returns Signature.
+  */
+ export async function sign(account, parameters) {
+-    const { storage, replaySafe = true, wrap = true } = parameters;
++    const { storage, replaySafe = true, wrap = true, webAuthn } = parameters;
+     const key = getKey(account, parameters);
+     const payload = (() => {
+         if (!replaySafe)
+@@ -118,6 +118,7 @@ export async function sign(account, parameters) {
+             address: null,
+             payload: hash,
+             storage,
++            webAuthn,
+             wrap,
+         });
+     })();
 diff --git a/node_modules/porto/core/Porto.ts b/node_modules/porto/core/Porto.ts
 index 2d64583..f9c5e25 100644
 --- a/node_modules/porto/core/Porto.ts
@@ -40,3 +89,45 @@ index 2d64583..f9c5e25 100644
      setMode(i) {
        destroy?.()
        mode = i
+diff --git a/node_modules/porto/core/internal/modes/relay.ts b/node_modules/porto/core/internal/modes/relay.ts
+index bcd79b2..95ec1a7 100644
+--- a/node_modules/porto/core/internal/modes/relay.ts
++++ b/node_modules/porto/core/internal/modes/relay.ts
+@@ -835,6 +835,7 @@ export function relay(parameters: relay.Parameters = {}) {
+         const signature = await Account.sign(account, {
+           key,
+           payload: PersonalMessage.getSignPayload(data),
++          webAuthn,
+         })
+ 
+         return Erc8010.wrap(client, { address: account.address, signature })
+@@ -857,6 +858,7 @@ export function relay(parameters: relay.Parameters = {}) {
+           payload: TypedData.getSignPayload(data),
+           // If the domain is the Orchestrator, we don't need to replay-safe sign.
+           replaySafe: !isOrchestrator,
++          webAuthn,
+         })
+ 
+         return isOrchestrator
+@@ -896,6 +898,7 @@ export function relay(parameters: relay.Parameters = {}) {
+         const signature = await Account.sign(account, {
+           key,
+           payload: Hash.keccak256(Hex.fromString(`${email}${token}`)),
++          webAuthn,
+         })
+ 
+         return await RelayActions.verifyEmail(client, {
+diff --git a/node_modules/porto/viem/Account.ts b/node_modules/porto/viem/Account.ts
+index c2da86b..f5b5400 100644
+--- a/node_modules/porto/viem/Account.ts
++++ b/node_modules/porto/viem/Account.ts
+@@ -255,5 +255,9 @@ export declare namespace sign {
+      * Whether to wrap the signature with key metadata.
+      */
+     wrap?: boolean | undefined
++    /**
++     * WebAuthn helpers for non-browser environments (e.g., React Native passkeys).
++     */
++    webAuthn?: { getFn?: any; createFn?: any } | undefined
+   }
+ }

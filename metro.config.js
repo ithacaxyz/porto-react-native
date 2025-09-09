@@ -1,85 +1,75 @@
 // Learn more https://docs.expo.io/guides/customizing-metro
-const path = require('node:path')
-const { withNativeWind } = require('nativewind/metro')
-const { getDefaultConfig } = require('expo/metro-config')
-
-/** @type {import('expo/metro-config').MetroConfig} */
-const config = getDefaultConfig(__dirname)
-
-config.resolver.assetExts.push('wasm')
-
-// COEP and COOP headers for to support SharedArrayBuffer
-config.server.enhanceMiddleware = (middleware) => {
-  return (request, response, next) => {
-    response.setHeader('Cross-Origin-Embedder-Policy', 'credentialless')
-    response.setHeader('Cross-Origin-Opener-Policy', 'same-origin')
-    middleware(request, response, next)
-  }
-}
-
-config.resolver.unstable_enablePackageExports = true
-config.resolver.unstable_conditionsByPlatform = true
 
 /**
- * @type {import('expo/metro-config').MetroConfig['resolver']['resolveRequest']}
+ * @typedef {import('expo/metro-config').MetroConfig} MetroConfig
  */
-config.resolver.resolveRequest = (context, moduleName, platform) => {
-  if (
-    //
-    moduleName.startsWith('ox') ||
-    moduleName.startsWith('@noble/hashes')
-  ) {
-    return {
-      type: 'sourceFile',
-      filePath: require.resolve(moduleName),
-    }
-  }
+const path = require('node:path')
+const { getDefaultConfig } = require('expo/metro-config')
 
-  // Prefer ESM builds for viem in RN to avoid ws/node deps from CJS.
-  if (moduleName === 'viem' || moduleName.startsWith('viem/')) {
-    const pkgDir = path.dirname(require.resolve('viem/package.json'))
-    const subpath = moduleName === 'viem' ? '' : moduleName.slice('viem'.length)
-    const file = subpath
-      ? path.join(pkgDir, '_esm', subpath, 'index.js')
-      : path.join(pkgDir, '_esm', 'index.js')
-    return { type: 'sourceFile', filePath: file }
-  }
+const defaultConfiguration = getDefaultConfig(__dirname)
 
-  // Force isows to native (uses global WebSocket, no `ws` dependency).
-  if (moduleName === 'isows') {
-    const pkgDir = path.dirname(require.resolve('isows/package.json'))
-    return {
-      type: 'sourceFile',
-      filePath: path.join(pkgDir, '_esm', 'native.js'),
-    }
-  }
+/** @type {MetroConfig} */
+const configuration = {
+  ...defaultConfiguration,
+  resolver: {
+    ...defaultConfiguration.resolver,
+    resolveRequest: (context, moduleName, platform) => {
+      // prefer CJS to avoid `window.*` APIs
+      if (
+        moduleName.startsWith('ox') ||
+        moduleName.startsWith('@noble/hashes')
+      ) {
+        return {
+          type: 'sourceFile',
+          filePath: require.resolve(moduleName),
+        }
+      }
 
-  // Handle crypto module resolution for React Native (iOS/Android only)
-  if (
-    (moduleName === 'crypto' || moduleName === 'node:crypto') &&
-    platform !== 'web'
-  ) {
-    // when importing crypto, resolve to react-native-quick-crypto
-    return context.resolveRequest(
-      context,
-      'react-native-quick-crypto',
-      platform,
-    )
-  }
+      // Prefer ESM avoid ws/node deps from CJS
+      if (moduleName === 'viem' || moduleName.startsWith('viem/')) {
+        const pkgDir = path.dirname(require.resolve('viem/package.json'))
+        const subpath =
+          moduleName === 'viem' ? '' : moduleName.slice('viem'.length)
+        const file = subpath
+          ? path.join(pkgDir, '_esm', subpath, 'index.js')
+          : path.join(pkgDir, '_esm', 'index.js')
+        return { type: 'sourceFile', filePath: file }
+      }
 
-  if (moduleName === 'stream' || moduleName === 'node:stream') {
-    return context.resolveRequest(context, 'readable-stream', platform)
-  }
+      if (
+        (moduleName === 'crypto' || moduleName === 'node:crypto') &&
+        platform !== 'web'
+      ) {
+        return context.resolveRequest(
+          context,
+          'react-native-quick-crypto',
+          platform,
+        )
+      }
 
-  if (moduleName === 'buffer' || moduleName === 'node:buffer') {
-    return context.resolveRequest(
-      context,
-      '@craftzdog/react-native-buffer',
-      platform,
-    )
-  }
+      if (moduleName === 'stream' || moduleName === 'node:stream') {
+        return context.resolveRequest(context, 'readable-stream', platform)
+      }
 
-  return context.resolveRequest(context, moduleName, platform)
+      if (moduleName === 'buffer' || moduleName === 'node:buffer') {
+        return context.resolveRequest(
+          context,
+          '@craftzdog/react-native-buffer',
+          platform,
+        )
+      }
+
+      return context.resolveRequest(context, moduleName, platform)
+    },
+  },
+  server: {
+    ...defaultConfiguration.server,
+    forwardClientLogs: true,
+  },
+  watcher: {
+    ...defaultConfiguration.watcher,
+    healthCheck: { enabled: true },
+  },
 }
 
-module.exports = withNativeWind(config, { input: './src/global.css' })
+module.exports = configuration

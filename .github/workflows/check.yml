@@ -1,0 +1,44 @@
+name: Check
+
+on:
+  workflow_dispatch:
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  ACTIONS_RUNNER_DEBUG: true
+
+jobs:
+  check:
+    name: 'Lint, Typecheck, Build'
+    timeout-minutes: 3
+    runs-on: ['ubuntu-latest']
+    steps:
+      - name: '🔑 Checkout'
+        uses: actions/checkout@v5
+
+      - name: '🐰 Setup bun'
+        uses: oven-sh/setup-bun@main
+        with:
+          bun-version: 'latest'
+
+      - name: 'Install Dependencies'
+        run: yarn install --frozen-lockfile
+
+      - name: 'Expo Doctor'
+        run: |
+          yarn expo install --fix
+          bun x expo-doctor --verbose --yarn
+
+      - name: 'Lint & Format'
+        run: |
+          bun x @biomejs/biome check . --reporter='github'
+
+      - name: 'Typecheck'
+        run: bun tsc --project tsconfig.json --noEmit

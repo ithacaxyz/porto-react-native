@@ -1,74 +1,30 @@
+import { type Address, Hex } from 'ox'
+import * as React from 'react'
+import { Link } from 'expo-router'
+import { WalletActions } from 'porto/viem'
+import { porto, walletClient } from '#lib/porto.ts'
 import {
   View,
   Text,
   Button,
   Platform,
-  Pressable,
-  ScrollView,
+  StyleSheet,
+  TextInput,
 } from 'react-native'
-import {
-  rp,
-  user,
-  challenge,
-  base64UrlToString,
-  utf8StringToBuffer,
-  authenticatorSelection,
-  bufferToBase64URLString,
-} from '#lib/crypto.ts'
-import * as React from 'react'
-import alert from '#lib/alert.ts'
-import { WalletActions } from 'porto/viem'
-import { walletClient } from '#lib/porto.ts'
-import { WebView } from 'react-native-webview'
-import * as passkey from 'react-native-passkeys'
+import { SafeAreaProvider } from 'react-native-safe-area-context'
 
 export default function Tab() {
-  const [credentialId, setCredentialId] = React.useState('')
+  const [error, setError] = React.useState<string | null>(null)
   const [result, setResult] = React.useState<string | null>(null)
-  const [portoAddress, setPortoAddress] = React.useState<string | null>(null)
-  const [creationResponse, setCreationResponse] = React.useState<string | null>(
-    null,
+  const [account, setAccount] = React.useState<Address.Address | undefined>(
+    undefined,
+  )
+  const [message, setMessage] = React.useState<string | undefined>(undefined)
+  const [signature, setSignature] = React.useState<string | undefined>(
+    undefined,
   )
 
-  async function createPasskey() {
-    try {
-      const json = await passkey.create({
-        challenge,
-        pubKeyCredParams: [{ alg: -7, type: 'public-key' }],
-        rp,
-        user,
-        authenticatorSelection,
-        ...(Platform.OS !== 'android' && {
-          extensions: { largeBlob: { support: 'required' } },
-        }),
-      })
-
-      console.log('creation json -', json)
-
-      if (json?.rawId) setCredentialId(json.rawId)
-      if (json?.response) setCreationResponse(json.response)
-
-      setResult(JSON.stringify(json))
-    } catch (e) {
-      console.error('create error', e)
-    }
-  }
-
-  async function authenticatePasskey() {
-    const json = await passkey.get({
-      rpId: rp.id,
-      challenge,
-      ...(credentialId && {
-        allowCredentials: [{ id: credentialId, type: 'public-key' }],
-      }),
-    })
-
-    console.log('authentication json -', json)
-
-    setResult(JSON.stringify(json))
-  }
-
-  async function connectPorto() {
+  async function createAccount() {
     console.info('connecting to porto...')
     try {
       const response = await WalletActions.connect(walletClient, {
@@ -77,141 +33,153 @@ export default function Tab() {
             Platform.OS === 'web' ? undefined : `___Porto_RN_${Date.now()}`,
         },
       })
+      const account = response.accounts.at(0)!
+      console.info('\n[porto] wallet_connect address:', account.address, '\n')
+      setAccount(account.address)
+      console.info(
+        '\n[porto] wallet_connect chainIds:',
+        response.chainIds,
+        '\n',
+      )
+      setResult(JSON.stringify(account, undefined, 2))
+    } catch (error) {
+      console.error('porto connect error', error)
+      setError(error instanceof Error ? error.message : JSON.stringify(error))
+    }
+  }
+
+  async function signIn() {
+    try {
+      const response = await WalletActions.connect(walletClient, {
+        selectAccount: true,
+      })
 
       const account = response.accounts.at(0)!
+      setAccount(account.address)
       console.info('\n[porto] wallet_connect address:', account.address, '\n')
       console.info(
         '\n[porto] wallet_connect chainIds:',
         response.chainIds,
         '\n',
       )
-      setPortoAddress(account.address)
       setResult(JSON.stringify(account, undefined, 2))
     } catch (error) {
       console.error('porto connect error', error)
+      setError(error instanceof Error ? error.message : JSON.stringify(error))
     }
   }
 
   async function disconnect() {
     try {
-      // await porto.provider.request({ method: 'wallet_disconnect' })
       await WalletActions.disconnect(walletClient)
-      setPortoAddress(null)
       setResult('disconnected')
     } catch (error) {
       console.error('porto disconnect error', error)
+      setError(error instanceof Error ? error.message : JSON.stringify(error))
     }
   }
 
-  async function writeBlob() {
-    console.log('user credential id -', credentialId)
-    if (!credentialId) {
-      alert(
-        'No user credential id found - large blob requires a selected credential',
-      )
-      return
+  async function signMessage() {
+    try {
+      if (!account) return
+      const response = await porto.provider.request({
+        method: 'personal_sign',
+        params: [Hex.fromString(message ?? 'Hello, world!'), account],
+      })
+
+      console.log('sign message response', response)
+      setSignature(response)
+    } catch (error) {
+      console.error('porto sign message error', error)
+      setError(error instanceof Error ? error.message : JSON.stringify(error))
     }
-
-    const json = await passkey.get({
-      rpId: rp.id,
-      challenge,
-      extensions: {
-        largeBlob: {
-          write: bufferToBase64URLString(
-            utf8StringToBuffer('Hey its a private key!') as any,
-          ),
-        },
-      },
-      ...(credentialId && {
-        allowCredentials: [{ id: credentialId, type: 'public-key' }],
-      }),
-    })
-
-    console.log('add blob json -', json)
-
-    const written = json?.clientExtensionResults?.largeBlob?.written
-    if (written) alert('This blob was written to the passkey')
-
-    setResult(JSON.stringify(json))
   }
-
-  async function readBlob() {
-    const json = await passkey.get({
-      rpId: rp.id,
-      challenge,
-      extensions: { largeBlob: { read: true } },
-      ...(credentialId && {
-        allowCredentials: [{ id: credentialId, type: 'public-key' }],
-      }),
-    })
-
-    console.log('read blob json -', json)
-
-    const blob = json?.clientExtensionResults?.largeBlob?.blob
-    if (blob) alert('This passkey has blob', base64UrlToString(blob))
-
-    setResult(JSON.stringify(json))
-  }
-
-  // biome-ignore lint/correctness/noNestedComponentDefinitions: _
-  const UserCredentials = () => (
-    <Text
-      className={`${credentialId ? 'block' : 'hidden'} text-black dark:text-white`}
-    >
-      User Credential ID: {credentialId}
-    </Text>
-  )
-
-  // biome-ignore lint/correctness/noNestedComponentDefinitions: _
-  const RawJson = () =>
-    Platform.OS === 'web' ? (
-      <Text className="max-w-[80%] text-lg font-mono overflow-auto">
-        {result}
-      </Text>
-    ) : (
-      <WebView
-        originWhitelist={['*']}
-        className="h-full w-full text-lg"
-        source={{ html: /* html */ `<pre>${result}</pre>` }}
-      />
-    )
-
   return (
-    <View className="flex-1 w-full">
-      <ScrollView contentContainerClassName="grow items-center justify-center">
-        <UserCredentials />
-        {portoAddress && (
-          <Text className="max-w-[80%] text-lg text-center font-mono overflow-auto">
-            Porto Address: {'\n'} {portoAddress}
-          </Text>
-        )}
-        <View className="p-16 grid grid-cols-2 grid-rows-2 items-center gap-4 justify-evenly *:border-2 *:w-full">
-          <Button title="connect" onPress={connectPorto} />
-          <Button title="disconnect" onPress={disconnect} />
-          <Button title="Create" onPress={createPasskey} />
+    <View
+      style={{
+        flex: 1,
+        paddingTop: 42,
+      }}
+    >
+      <Link
+        href="https://porto.sh"
+        style={{
+          marginLeft: 12,
+          textDecorationLine: 'underline',
+          color: 'blue',
+        }}
+      >
+        porto.sh
+      </Link>
+      <SafeAreaProvider
+        style={{
+          padding: 16,
+          flexDirection: 'column',
+          gap: 12,
+        }}
+      >
+        <View
+          style={{
+            flexDirection: 'column',
+            gap: 12,
+            maxWidth: 400,
+          }}
+        >
+          <Button title="Create new account" onPress={createAccount} />
+          <Button title="sign in" onPress={signIn} />
+          <Button title="Disconnect" onPress={disconnect} />
+          <View>
+            <Button
+              title="sign message"
+              onPress={signMessage}
+              disabled={!account}
+            />
 
-          <Button title="Authenticate" onPress={authenticatePasskey} />
-
-          <Button title="Add Blob" onPress={writeBlob} />
-
-          <Button title="Read Blob" onPress={readBlob} />
-
-          {creationResponse && (
-            <Pressable
-              className="bg-white p-10 rounded-[5px] w-[45%] items-center justify-center text-center"
-              onPress={() => {
-                alert('Public Key', 'Check logs')
-                console.log('Public Key', result)
-              }}
-            >
-              <Text>Get PublicKey</Text>
-            </Pressable>
-          )}
+            <TextInput
+              placeholder="message"
+              placeholderTextColor="gray"
+              // editable={!account}
+              // readOnly={!account}
+              style={styles.input}
+              value={message ?? ''}
+              onChangeText={setMessage}
+            />
+          </View>
         </View>
-        <View className="text-lg text-center items-center max-w-full w-full">
-          {result && <RawJson />}
-        </View>
-      </ScrollView>
+        {result ? <Text>{result}</Text> : null}
+
+        {signature ? <Text>{signature}</Text> : null}
+
+        {error ? <Text style={{ color: 'red' }}>{error}</Text> : null}
+      </SafeAreaProvider>
     </View>
   )
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingTop: 42,
+    textTransform: 'uppercase',
+  },
+  button: {
+    textTransform: 'uppercase',
+    fontWeight: 'bold',
+    fontSize: 16,
+    fontFamily: 'monospace',
+    borderColor: '#000',
+    borderWidth: 1.5,
+    color: '#000',
+    padding: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  input: {
+    borderColor: '#000',
+    borderWidth: 1.5,
+    color: '#000',
+    padding: 8,
+    fontSize: 16,
+    fontFamily: 'monospace',
+  },
+})

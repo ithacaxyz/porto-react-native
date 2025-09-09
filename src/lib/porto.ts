@@ -19,9 +19,7 @@ export const rp = {
   name: 'porto-rn',
 } satisfies PublicKeyCredentialRpEntity
 
-async function createFn(
-  options: CredentialCreationOptions | undefined,
-): Promise<Credential | null> {
+async function createFn(options?: any): Promise<any> {
   const publicKey = (options?.publicKey ||
     options) as PublicKeyCredentialCreationOptions
 
@@ -71,9 +69,7 @@ async function createFn(
   return credential
 }
 
-async function getFn(
-  options: CredentialRequestOptions | undefined,
-): Promise<Credential | null> {
+async function getFn(options?: any): Promise<any> {
   const publicKey =
     options?.publicKey || (options as PublicKeyCredentialRequestOptions)
 
@@ -82,7 +78,7 @@ async function getFn(
     timeout: publicKey.timeout,
     challenge: bufferToBase64URL(publicKey.challenge),
     extensions: { largeBlob: { support: 'preferred' } },
-    allowCredentials: publicKey.allowCredentials?.map((item) => ({
+    allowCredentials: publicKey.allowCredentials?.map((item: any) => ({
       ...item,
       id: bufferToBase64URL(item.id),
     })),

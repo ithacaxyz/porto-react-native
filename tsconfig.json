@@ -34,7 +34,6 @@
     "index.ts",
     "reset.d.ts",
     "app.config.ts",
-    "expo-env.d.ts",
     "metro.config.js",
     "babel.config.js"
   ],

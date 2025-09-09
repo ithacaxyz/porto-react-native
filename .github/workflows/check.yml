@@ -41,4 +41,4 @@ jobs:
           bun x @biomejs/biome check . --reporter='github'
 
       - name: 'Typecheck'
-        run: bun typecheck
+        run: bun tsc --project tsconfig.json --noEmit

@@ -87,6 +87,7 @@
     "babel-plugin-transform-import-meta": "^2.3.3",
     "nypm": "^0.6.1",
     "traverse": "^0.6.11",
+    "tsgolint": "^0.0.1",
     "tsx": "^4.20.5",
     "typescript": "~5.9.2"
   },

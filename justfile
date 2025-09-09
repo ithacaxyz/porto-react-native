@@ -22,6 +22,12 @@ doctor:
 polyglot-postinstall:
     cd ios && pod install && cd ..
 
+deploy-server:
+    cd server && railway up --detach
+
+android-device:
+    scrcpy --video-codec='h265' --max-size='1920' --max-fps='60' --no-audio --keyboard='uhid' --select-usb --record='file.mp4' --window-borderless
+
 android-cert:
     keytool -genkey -v -keystore debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000
     keytool -list -v -keystore ~/.android/debug.keystore -alias androiddebugkey -storepass android -keypass android | grep SHA256

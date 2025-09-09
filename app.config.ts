@@ -21,7 +21,7 @@ export default (context: ConfigContext): ExpoConfig => ({
     package: 'org.name.portorn',
   },
   web: {
-    output: 'static',
+    output: 'single',
     bundler: 'metro',
   },
   extra: {

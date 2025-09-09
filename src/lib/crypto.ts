@@ -1,10 +1,7 @@
 import { Platform } from 'react-native'
 import { base64 } from '@hexagon/base64'
 import { encode as btoa } from 'base-64'
-
-import Constants from 'expo-constants'
 import * as Application from 'expo-application'
-import * as Crypto from 'expo-crypto'
 
 export function bufferToBase64URLString(buffer: ArrayBuffer) {
   const bytes = new Uint8Array(buffer)
@@ -24,26 +21,17 @@ export function base64UrlToString(base64urlString: Base64URLString) {
   return base64.toString(base64urlString, true)
 }
 
-// Use Expo's randomUUID instead of the deprecated crypto.randomUUID
-export function randomUUID() {
-  return Crypto.randomUUID()
-}
-
 export const bundleId = Application.applicationId
   ?.split('.')
   .reverse()
   .join('.')
 
-// Derive the Relying Party ID (domain) from the Expo iOS associated domains
-// Prefer the `webcredentials:` entry to keep native passkeys aligned
-const associatedDomains: string[] | undefined = (Constants.expoConfig as any)
-  ?.ios?.associatedDomains
-
-const rpDomain = process.env.EXPO_PUBLIC_SERVER_DOMAIN
+// const rpDomain = process.env.EXPO_PUBLIC_SERVER_DOMAIN
+const rpDomain = 'xporto.up.railway.app'
 
 export const rp = {
   id: Platform.select({
-    web: undefined,
+    // web: undefined,
     // For native (iOS/Android), RP ID must be a domain you control
     ios: rpDomain,
     android: rpDomain,
@@ -73,4 +61,27 @@ export function toArrayBufferFromB64Url(input: string) {
 
 export function toB64UrlFromArrayBuffer(input: ArrayBuffer) {
   return bufferToBase64URLString(input)
+}
+
+export const bufferToArrayBuffer = (
+  input: BufferSource,
+): ArrayBuffer | SharedArrayBuffer =>
+  input instanceof ArrayBuffer
+    ? input
+    : input.buffer.slice(input.byteOffset, input.byteOffset + input.byteLength)
+
+export const bufferToBase64URL = (input: BufferSource) => {
+  const bytes =
+    input instanceof ArrayBuffer
+      ? new Uint8Array(input)
+      : new Uint8Array(input.buffer, input.byteOffset, input.byteLength)
+
+  return btoa(String.fromCharCode(...bytes))
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=/g, '')
+}
+
+export function urlBase64ToArrayBuffer(input: string): ArrayBuffer {
+  return base64.toArrayBuffer(input, true)
 }

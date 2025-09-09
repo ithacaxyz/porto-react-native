@@ -1,38 +1,37 @@
-// IMPORTANT: This must be imported before any crypto-dependent libraries
-import 'react-native-get-random-values'
-
-// Ensure crypto is available
-if (typeof globalThis.crypto === 'undefined') {
-  console.warn('crypto not available, attempting to polyfill...')
-  require('react-native-get-random-values')
-}
-
 import {
-  rp as rnRp,
+  bufferToBase64URL,
   toArrayBufferFromB64Url,
   toB64UrlFromArrayBuffer,
 } from '#lib/crypto.ts'
-import * as Hex from 'ox/Hex'
-// import { Porto, Mode } from 'porto'
+import { Porto, Mode } from 'porto'
 import { Platform } from 'react-native'
 import * as passkey from 'react-native-passkeys'
 import { base, baseSepolia } from 'porto/Chains'
 import { custom, createWalletClient } from 'viem'
 
-// Note: The native passkey implementations handle crypto operations internally.
-// The Web Crypto API's importKey function is not available in React Native,
-// so Porto must rely on the native libraries to handle key generation and signing.
+const rpDomain = 'xporto.up.railway.app'
 
-async function createFn(options: any): Promise<any> {
-  const publicKey = options?.publicKey || options
+export const rp = {
+  id: Platform.select({
+    ios: rpDomain,
+    android: rpDomain,
+  }),
+  name: 'porto-rn',
+} satisfies PublicKeyCredentialRpEntity
+
+async function createFn(
+  options: CredentialCreationOptions | undefined,
+): Promise<Credential | null> {
+  const publicKey = (options?.publicKey ||
+    options) as PublicKeyCredentialCreationOptions
 
   const json = {
-    rp: publicKey.rp ?? (rnRp?.id ? { id: rnRp.id, name: rnRp.id } : undefined),
+    rp: publicKey.rp ?? (rp?.id ? { id: rp.id, name: rp.id } : undefined),
     user: {
       ...publicKey.user,
-      id: toB64UrlFromArrayBuffer(publicKey.user.id),
+      id: bufferToBase64URL(publicKey.user.id),
     },
-    challenge: toB64UrlFromArrayBuffer(publicKey.challenge),
+    challenge: bufferToBase64URL(publicKey.challenge),
     pubKeyCredParams: publicKey.pubKeyCredParams,
     timeout: publicKey.timeout,
     excludeCredentials: publicKey.excludeCredentials?.map((d: any) => ({
@@ -41,151 +40,90 @@ async function createFn(options: any): Promise<any> {
     })),
     authenticatorSelection: publicKey.authenticatorSelection,
     attestation: publicKey.attestation,
-    extensions: publicKey.extensions,
+    extensions: {
+      ...publicKey.extensions,
+      largeBlob: { support: 'preferred' },
+    },
     signal: options?.signal,
   }
 
-  const res = await passkey.create(json as any)
-  if (!res) throw new Error('Passkey creation cancelled')
+  const response = await passkey.create(json as any)
+  if (!response) throw new Error('Passkey creation cancelled')
 
   // Adapt to a PublicKeyCredential-like shape
   const credential = {
-    id: res.id,
-    rawId: toArrayBufferFromB64Url(res.rawId),
+    id: response.id,
+    rawId: toArrayBufferFromB64Url(response.rawId),
     response: {
       attestationObject: toArrayBufferFromB64Url(
-        res.response.attestationObject,
+        response.response.attestationObject,
       ),
-      clientDataJSON: toArrayBufferFromB64Url(res.response.clientDataJSON),
-      // Force OX to use attestationObject fallback for public key extraction.
-      // OX calls response.getPublicKey() first and then uses WebCrypto.importKey("spki", ...).
-      // React Native does not have WebCrypto, and the native library returns raw x||y, not SPKI.
-      // Throw the expected error so OX falls back to parsing attestationObject.
+      clientDataJSON: toArrayBufferFromB64Url(response.response.clientDataJSON),
       getPublicKey: () => {
         throw new Error('Permission denied to access object')
       },
     },
-    type: res.type,
-    clientExtensionResults: res.clientExtensionResults,
-    authenticatorAttachment: res.authenticatorAttachment,
+    type: response.type,
+    clientExtensionResults: response.clientExtensionResults,
+    authenticatorAttachment: response.authenticatorAttachment,
   }
 
   return credential
 }
 
-async function getFn(options: any): Promise<any> {
-  const publicKey = options?.publicKey || options
+async function getFn(
+  options: CredentialRequestOptions | undefined,
+): Promise<Credential | null> {
+  const publicKey =
+    options?.publicKey || (options as PublicKeyCredentialRequestOptions)
 
-  const json = {
-    challenge: toB64UrlFromArrayBuffer(publicKey.challenge),
+  const response = await passkey.get({
+    rpId: publicKey.rpId,
     timeout: publicKey.timeout,
-    rpId: publicKey.rpId ?? rnRp?.id,
-    allowCredentials: publicKey.allowCredentials?.map((d: any) => ({
-      ...d,
-      id: toB64UrlFromArrayBuffer(d.id),
+    challenge: bufferToBase64URL(publicKey.challenge),
+    extensions: { largeBlob: { support: 'preferred' } },
+    allowCredentials: publicKey.allowCredentials?.map((item) => ({
+      ...item,
+      id: bufferToBase64URL(item.id),
     })),
     userVerification: publicKey.userVerification,
-    extensions: publicKey.extensions,
-  }
-
-  const res = await passkey.get(json as any)
-  if (!res) throw new Error('Passkey authentication cancelled')
-
+  })
+  if (!response) throw new Error('Passkey authentication cancelled')
   const credential = {
-    id: res.id,
-    rawId: toArrayBufferFromB64Url(res.rawId),
+    id: response.id,
+    rawId: toArrayBufferFromB64Url(response.rawId),
     response: {
       authenticatorData: toArrayBufferFromB64Url(
-        res.response.authenticatorData,
+        response.response.authenticatorData,
       ),
-      clientDataJSON: toArrayBufferFromB64Url(res.response.clientDataJSON),
-      signature: toArrayBufferFromB64Url(res.response.signature),
-      userHandle: res.response.userHandle
-        ? toArrayBufferFromB64Url(res.response.userHandle)
+      clientDataJSON: toArrayBufferFromB64Url(response.response.clientDataJSON),
+      signature: toArrayBufferFromB64Url(response.response.signature),
+      userHandle: response.response.userHandle
+        ? toArrayBufferFromB64Url(response.response.userHandle)
         : null,
     },
-    type: res.type,
-    clientExtensionResults: res.clientExtensionResults,
-    authenticatorAttachment: res.authenticatorAttachment,
+    type: response.type,
+    clientExtensionResults: response.clientExtensionResults,
+    authenticatorAttachment: response.authenticatorAttachment,
   }
 
   return credential
 }
 
-export async function getPorto() {
-  const { Porto, Mode } = await import('porto')
-  const porto = Porto.create({
-    mode:
-      Platform.OS === 'web'
-        ? Mode.dialog()
-        : Mode.relay({
-            keystoreHost: rnRp?.id,
-            webAuthn: { createFn, getFn },
-          }),
-    chains: [base, baseSepolia],
-    // storage:
-    //   Platform.OS === 'web'
-    //     ? Storage.localStorage()
-    //     : Storage.combine(Storage.cookie(), Storage.memory()),
-  })
+export const porto = Porto.create({
+  ...Platform.select({
+    web: { mode: Mode.dialog() },
+    default: {
+      mode: Mode.relay({
+        keystoreHost: rp?.id,
+        webAuthn: { createFn, getFn },
+      }),
+    },
+  }),
+  chains: [base, baseSepolia],
+})
 
-  const walletClient = createWalletClient({
-    chain: baseSepolia,
-
-    transport: custom(porto.provider),
-  })
-
-  /**
-   * Minimal in-memory cache for selectAccount to skip WebAuthn discovery.
-   * Persisting across restarts can be added later (e.g. SecureStore/SQLite).
-   */
-  let selectAccountCache: {
-    address: `0x${string}`
-    credentialId?: string
-    publicKey: `0x${string}`
-  } | null = null
-
-  function updateSelectAccountCache(response: any) {
-    try {
-      const account = response?.accounts?.[0]
-      if (!account) return
-      const address = account.address as `0x${string}`
-      const adminKey = account.capabilities?.admins?.find(
-        (k: any) => k?.type === 'webauthn-p256',
-      )
-      if (!adminKey) return
-      const publicKey = adminKey.publicKey as `0x${string}`
-      const credentialId = adminKey.credentialId as string | undefined
-      if (Hex.validate(publicKey))
-        selectAccountCache = { address, credentialId, publicKey }
-    } catch {}
-  }
-
-  async function connect(parameters?: { capabilities?: any }) {
-    console.log('connect', parameters)
-    const caps = { ...(parameters?.capabilities ?? {}) }
-    if (selectAccountCache) {
-      caps.selectAccount = {
-        address: selectAccountCache.address,
-        key: {
-          credentialId: selectAccountCache.credentialId,
-          publicKey: selectAccountCache.publicKey,
-        },
-      }
-    }
-
-    const response = await porto.provider.request({
-      method: 'wallet_connect',
-      params: [
-        {
-          capabilities: caps,
-        },
-      ],
-    })
-    console.info('response', response)
-    updateSelectAccountCache(response)
-    return response
-  }
-
-  return { porto, walletClient, connect }
-}
+export const walletClient = createWalletClient({
+  chain: baseSepolia,
+  transport: custom(porto.provider),
+})

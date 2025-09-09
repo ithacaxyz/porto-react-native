@@ -17,7 +17,8 @@ import {
 } from '#lib/crypto.ts'
 import * as React from 'react'
 import alert from '#lib/alert.ts'
-import { getPorto } from '#lib/porto.ts'
+import { WalletActions } from 'porto/viem'
+import { walletClient } from '#lib/porto.ts'
 import { WebView } from 'react-native-webview'
 import * as passkey from 'react-native-passkeys'
 
@@ -70,22 +71,20 @@ export default function Tab() {
   async function connectPorto() {
     console.info('connecting to porto...')
     try {
-      const { connect, porto } = await getPorto()
-      const response = await porto.provider.request({
-        method: 'wallet_connect',
-        params: [
-          {
-            capabilities: {
-              createAccount: {
-                label: `___RN_${Date.now()}`,
-              },
-            },
-          },
-        ],
+      const response = await WalletActions.connect(walletClient, {
+        createAccount: {
+          label:
+            Platform.OS === 'web' ? undefined : `___Porto_RN_${Date.now()}`,
+        },
       })
-      console.info('response', response)
+
       const account = response.accounts.at(0)!
-      console.info(account)
+      console.info('\n[porto] wallet_connect address:', account.address, '\n')
+      console.info(
+        '\n[porto] wallet_connect chainIds:',
+        response.chainIds,
+        '\n',
+      )
       setPortoAddress(account.address)
       setResult(JSON.stringify(account, undefined, 2))
     } catch (error) {
@@ -95,8 +94,8 @@ export default function Tab() {
 
   async function disconnect() {
     try {
-      const { porto } = await getPorto()
-      await porto.provider.request({ method: 'wallet_disconnect' })
+      // await porto.provider.request({ method: 'wallet_disconnect' })
+      await WalletActions.disconnect(walletClient)
       setPortoAddress(null)
       setResult('disconnected')
     } catch (error) {
@@ -166,13 +165,13 @@ export default function Tab() {
   // biome-ignore lint/correctness/noNestedComponentDefinitions: _
   const RawJson = () =>
     Platform.OS === 'web' ? (
-      <Text className="max-w-[80%] text-black dark:text-white text-sm font-mono overflow-auto">
+      <Text className="max-w-[80%] text-lg font-mono overflow-auto">
         {result}
       </Text>
     ) : (
       <WebView
         originWhitelist={['*']}
-        className="h-full w-full text-black dark:text-white"
+        className="h-full w-full text-lg"
         source={{ html: /* html */ `<pre>${result}</pre>` }}
       />
     )
@@ -180,26 +179,14 @@ export default function Tab() {
   return (
     <View className="flex-1 w-full">
       <ScrollView contentContainerClassName="grow items-center justify-center">
-        <Text className="text-black dark:text-white text-xl font-extrabold">
-          Tab [Home]
-        </Text>
-        <Text className="text-black dark:text-white">
-          Passkeys are {passkey.isSupported() ? 'supported' : 'not supported'}
-        </Text>
         <UserCredentials />
         {portoAddress && (
-          <Text className="max-w-[80%] text-black dark:text-white text-sm font-mono overflow-auto">
-            Porto Address: {portoAddress}
+          <Text className="max-w-[80%] text-lg text-center font-mono overflow-auto">
+            Porto Address: {'\n'} {portoAddress}
           </Text>
         )}
         <View className="p-16 grid grid-cols-2 grid-rows-2 items-center gap-4 justify-evenly *:border-2 *:w-full">
           <Button title="connect" onPress={connectPorto} />
-          {/* <Pressable
-            onPress={connectPorto}
-            className="bg-white p-10 rounded-[5px] w-[45%] items-center justify-center text-center"
-          >
-            <Text>connect</Text>
-          </Pressable> */}
           <Button title="disconnect" onPress={disconnect} />
           <Button title="Create" onPress={createPasskey} />
 
@@ -221,7 +208,7 @@ export default function Tab() {
             </Pressable>
           )}
         </View>
-        <View className="text-black dark:text-white text-center items-center max-w-full w-full">
+        <View className="text-lg text-center items-center max-w-full w-full">
           {result && <RawJson />}
         </View>
       </ScrollView>

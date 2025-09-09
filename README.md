@@ -1,6 +1,6 @@
-# [Porto](https://porto.sh) x React Native
+# Porto x React Native
 
-A React Native application built with Expo v54 and [Porto](https://porto.sh) for Web3 authentication and passkey integration.
+A React Native application built with Expo and Porto for Web3 authentication and passkey integration.
 
 ## Quick Start
 
@@ -14,14 +14,14 @@ A React Native application built with Expo v54 and [Porto](https://porto.sh) for
 
 ### Installation
 
-1. **Clone and install dependencies:**
+1. Clone and install dependencies:
    ```bash
    git clone <your-fork-url>
    cd porto-rn
    yarn install
    ```
 
-2. **Install iOS dependencies (macOS only):**
+2. Install iOS dependencies (macOS only):
    ```bash
    cd ios && pod install && cd ..
    ```
@@ -30,12 +30,12 @@ A React Native application built with Expo v54 and [Porto](https://porto.sh) for
 
 ### Running the App
 
-- **Start development server:** `yarn dev` or `yarn expo start`
-- **Start with dev client:** `yarn start`
-- **Run on iOS:** `yarn ios`
-- **Run on Android:** `yarn android` 
-- **Run on Web:** `yarn web`
-- **Clear cache and restart:** `just clear`
+- Start development server: `yarn dev` or `yarn expo start`
+- Start with dev client: `yarn start`
+- Run on iOS: `yarn ios`
+- Run on Android: `yarn android` 
+- Run on Web: `yarn web`
+- Clear cache and restart: `just clear`
 
 ### Available Commands (via [just](https://github.com/casey/just))
 
@@ -56,21 +56,21 @@ When forking this project, update the following fields in `app.config.ts`:
 ```typescript
 export default (context: ConfigContext): ExpoConfig => ({
   // Update these fields:
-  slug: 'your-app-slug',           // Line 8
-  name: 'Your App Name',           // Line 9
-  scheme: 'your-app-scheme',       // Line 10
+  slug: 'your-app-slug',
+  name: 'Your App Name',
+  scheme: 'your-app-scheme',
   
   ios: {
-    appleTeamId: 'YOUR_TEAM_ID',                    // Line 16
-    bundleIdentifier: 'com.yourcompany.yourapp',    // Line 17
-    associatedDomains: ['webcredentials:your-domain.com'], // Line 18
+    appleTeamId: 'YOUR_TEAM_ID',
+    bundleIdentifier: 'com.yourcompany.yourapp',
+    associatedDomains: ['webcredentials:your-domain.com'],
   },
   android: {
-    package: 'com.yourcompany.yourapp',             // Line 21
+    package: 'com.yourcompany.yourapp',
   },
   extra: {
     eas: {
-      projectId: 'your-expo-project-id',            // Line 32
+      projectId: 'your-expo-project-id',
     },
   },
 })
@@ -83,21 +83,17 @@ export default (context: ConfigContext): ExpoConfig => ({
 3. **EAS Project ID**: Create project at [expo.dev](https://expo.dev) and copy the project ID
 4. **Associated Domain**: Your server domain where you'll host the app verification files
 
-## Server Directory (`./server`)
+## Server Directory
 
-The `./server` directory contains a [Bun](https://bun.sh) server that serves **App Verification Files** required for:
+The `./server` directory contains a Bun server that serves app verification files required for:
 
-### Purpose
-- **iOS Universal Links**: Verifies your app can handle deep links from your domain
-- **Android App Links**: Verifies your app can handle Android deep links
-- **Passkey/WebAuthn**: Enables passkey authentication across web and mobile
+- iOS Universal Links: Verifies your app can handle deep links from your domain
+- Android App Links: Verifies your app can handle Android deep links
+- Passkey/WebAuthn: Enables passkey authentication across web and mobile
 
 ### Files Served
 - `/.well-known/apple-app-site-association` - iOS app verification
 - `/.well-known/assetlinks.json` - Android app verification
-
-### Server Configuration
-The server runs on the port specified by the `PORT` environment variable and serves these verification files that must be accessible at your domain's root.
 
 ### Deploying the Server
 ```bash
@@ -164,6 +160,14 @@ keytool -list -v -keystore your-release-key.keystore -alias your-alias
    - `https://yourdomain.com/.well-known/apple-app-site-association`
    - `https://yourdomain.com/.well-known/assetlinks.json`
 3. Test deep links and passkey functionality
+
+## Tech Stack
+
+- React Native with Expo
+- Porto for Web3 authentication
+- React Native Passkeys for biometric authentication
+- TypeScript
+- Biome for code formatting and linting
 
 ## Useful Links
 

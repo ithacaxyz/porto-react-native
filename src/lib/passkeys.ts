@@ -3,12 +3,6 @@ import { base64 } from '@hexagon/base64'
 import * as passkey from 'react-native-passkeys'
 import type OxWebAuthn from 'node_modules/ox/_types/core/internal/webauthn'
 
-type CredentialDescriptorLike = {
-  id: BufferSource
-  type?: PublicKeyCredentialType
-  transports?: Array<AuthenticatorTransport>
-}
-
 const arrayBufferToBase64URL = (buffer: ArrayBuffer) =>
   base64.fromArrayBuffer(buffer, true)
 

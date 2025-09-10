@@ -1,8 +1,8 @@
 import { Platform } from 'react-native'
 import { base64 } from '@hexagon/base64'
 import * as passkey from 'react-native-passkeys'
+import type OxWebAuthn from 'node_modules/ox/_types/core/internal/webauthn'
 
-type PublicKeyCredentialRpEntity = { name: string; id?: string }
 type CredentialDescriptorLike = {
   id: BufferSource
   type?: PublicKeyCredentialType
@@ -39,7 +39,7 @@ export const rp = {
     android: rpDomain,
   }),
   name: 'porto-rn',
-} satisfies PublicKeyCredentialRpEntity
+} satisfies OxWebAuthn.PublicKeyCredentialRpEntity
 
 export const user = {
   name: 'username',
@@ -53,18 +53,18 @@ export const authenticatorSelection = {
 } satisfies AuthenticatorSelectionCriteria
 
 export async function createFn(
-  options?: CredentialCreationOptions,
+  options?: OxWebAuthn.CredentialCreationOptions,
 ): Promise<Credential | null> {
   const publicKey = (options?.publicKey ||
-    options) as PublicKeyCredentialCreationOptions
+    options) as OxWebAuthn.PublicKeyCredentialCreationOptions
 
   const json = {
     rp: publicKey.rp ?? (rp?.id ? { id: rp.id, name: rp.id } : undefined),
     user: {
       ...publicKey.user,
-      id: bufferToBase64URL(publicKey.user.id),
+      id: bufferToBase64URL(publicKey.user.id as ArrayBuffer),
     },
-    challenge: bufferToBase64URL(publicKey.challenge),
+    challenge: bufferToBase64URL(publicKey.challenge as ArrayBuffer),
     pubKeyCredParams: publicKey.pubKeyCredParams,
     timeout: publicKey.timeout,
     excludeCredentials: publicKey.excludeCredentials?.map((d) => ({
@@ -107,22 +107,21 @@ export async function createFn(
 }
 
 export async function getFn(
-  options?: CredentialRequestOptions,
+  options?: OxWebAuthn.CredentialRequestOptions,
 ): Promise<Credential | null> {
   const publicKey =
-    options?.publicKey || (options as PublicKeyCredentialRequestOptions)
+    options?.publicKey ||
+    (options as OxWebAuthn.PublicKeyCredentialRequestOptions)
 
   const response = await passkey.get({
     rpId: publicKey.rpId,
     timeout: publicKey.timeout,
     challenge: bufferToBase64URL(publicKey.challenge as ArrayBuffer),
     extensions: { largeBlob: { support: 'preferred' as const } },
-    allowCredentials: publicKey.allowCredentials?.map(
-      (item: CredentialDescriptorLike) => ({
-        ...item,
-        id: bufferToBase64URL(item.id as ArrayBuffer),
-      }),
-    ),
+    allowCredentials: publicKey.allowCredentials?.map((item) => ({
+      ...item,
+      id: bufferToBase64URL(item.id as ArrayBuffer),
+    })),
     userVerification: publicKey.userVerification,
   })
   if (!response) throw new Error('Passkey authentication cancelled')

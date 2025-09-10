@@ -1,8 +1,3 @@
-import { type Address, Hex } from 'ox'
-import * as React from 'react'
-import { Link } from 'expo-router'
-import { WalletActions } from 'porto/viem'
-import { porto, walletClient } from '#lib/porto.ts'
 import {
   View,
   Text,
@@ -10,7 +5,13 @@ import {
   Platform,
   StyleSheet,
   TextInput,
+  TouchableOpacity,
 } from 'react-native'
+import * as React from 'react'
+import { Link } from 'expo-router'
+import { type Address, Hex } from 'ox'
+import { WalletActions } from 'porto/viem'
+import { porto, walletClient } from '#lib/porto.ts'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 
 export default function Tab() {
@@ -33,14 +34,9 @@ export default function Tab() {
             Platform.OS === 'web' ? undefined : `___Porto_RN_${Date.now()}`,
         },
       })
-      const account = response.accounts.at(0)!
-      console.info('\n[porto] wallet_connect address:', account.address, '\n')
-      setAccount(account.address)
-      console.info(
-        '\n[porto] wallet_connect chainIds:',
-        response.chainIds,
-        '\n',
-      )
+      const [account] = response.accounts
+      console.info('\n[porto] wallet_connect address:', account?.address, '\n')
+      setAccount(account?.address)
       setResult(JSON.stringify(account, undefined, 2))
     } catch (error) {
       console.error('porto connect error', error)
@@ -54,14 +50,9 @@ export default function Tab() {
         selectAccount: true,
       })
 
-      const account = response.accounts.at(0)!
-      setAccount(account.address)
-      console.info('\n[porto] wallet_connect address:', account.address, '\n')
-      console.info(
-        '\n[porto] wallet_connect chainIds:',
-        response.chainIds,
-        '\n',
-      )
+      const [account] = response.accounts
+      setAccount(account?.address)
+      console.info('\n[porto] wallet_connect address:', account?.address, '\n')
       setResult(JSON.stringify(account, undefined, 2))
     } catch (error) {
       console.error('porto connect error', error)
@@ -94,62 +85,52 @@ export default function Tab() {
       setError(error instanceof Error ? error.message : JSON.stringify(error))
     }
   }
+
+  console.info('account', account)
   return (
-    <View
-      style={{
-        flex: 1,
-        paddingTop: 42,
-      }}
-    >
-      <Link
-        href="https://porto.sh"
-        style={{
-          marginLeft: 12,
-          textDecorationLine: 'underline',
-          color: 'blue',
-        }}
-      >
-        porto.sh
+    <View style={styles.outerView}>
+      <Link href="https://porto.sh/sdk/guides/react-native" style={styles.link}>
+        porto.sh/sdk/guides/react-native
       </Link>
-      <SafeAreaProvider
-        style={{
-          padding: 16,
-          flexDirection: 'column',
-          gap: 12,
-        }}
-      >
-        <View
-          style={{
-            flexDirection: 'column',
-            gap: 12,
-            maxWidth: 400,
-          }}
-        >
+      <Text style={styles.accountText}>{account}</Text>
+      <SafeAreaProvider style={styles.safeAreaProvider}>
+        <View style={styles.innerView}>
           <Button title="Create new account" onPress={createAccount} />
           <Button title="sign in" onPress={signIn} />
           <Button title="Disconnect" onPress={disconnect} />
-          <View>
-            <Button
-              title="sign message"
-              onPress={signMessage}
-              disabled={!account}
-            />
 
-            <TextInput
-              placeholder="message"
-              placeholderTextColor="gray"
-              // editable={!account}
-              // readOnly={!account}
-              style={styles.input}
-              value={message ?? ''}
-              onChangeText={setMessage}
-            />
-          </View>
+          <TouchableOpacity
+            onPress={signMessage}
+            disabled={!account}
+            style={[
+              styles.customButton,
+              !account && styles.customButtonDisabled,
+            ]}
+          >
+            <Text
+              style={[
+                styles.customButtonText,
+                !account && styles.customButtonTextDisabled,
+              ]}
+            >
+              sign message
+            </Text>
+          </TouchableOpacity>
+
+          <TextInput
+            inputMode="text"
+            readOnly={!account}
+            editable={!!account}
+            style={styles.input}
+            placeholder="message"
+            value={message ?? ''}
+            onChangeText={setMessage}
+            placeholderTextColor="gray"
+          />
         </View>
+
         {result ? <Text>{result}</Text> : null}
-
         {signature ? <Text>{signature}</Text> : null}
-
         {error ? <Text style={{ color: 'red' }}>{error}</Text> : null}
       </SafeAreaProvider>
     </View>
@@ -161,6 +142,20 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 42,
     textTransform: 'uppercase',
+  },
+  outerView: {
+    flex: 1,
+    paddingTop: 42,
+  },
+  safeAreaProvider: {
+    gap: 12,
+    padding: 16,
+    flexDirection: 'column',
+  },
+  innerView: {
+    gap: 12,
+    maxWidth: 400,
+    flexDirection: 'column',
   },
   button: {
     textTransform: 'uppercase',
@@ -179,7 +174,43 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     color: '#000',
     padding: 8,
+    outlineStyle: 'none',
     fontSize: 16,
     fontFamily: 'monospace',
+  },
+  link: {
+    color: '#ffffff',
+    backgroundColor: 'rgba(255, 115, 255, 0.64)',
+    width: 'fit-content',
+    padding: 5,
+    fontSize: 16,
+    marginLeft: 12,
+    marginTop: 12,
+    fontWeight: 'light',
+    fontFamily: 'monospace',
+    textDecorationLine: 'underline',
+  },
+  customButton: {
+    backgroundColor: '#2196F3',
+    padding: 10,
+    alignItems: 'center',
+  },
+  customButtonDisabled: {
+    backgroundColor: '#cccccc',
+    opacity: 0.6,
+  },
+  customButtonText: {
+    color: 'white',
+    fontSize: 14,
+    textTransform: 'uppercase',
+  },
+  customButtonTextDisabled: {
+    color: '#666666',
+  },
+  accountText: {
+    fontSize: 14,
+    marginLeft: 12,
+    fontFamily: 'monospace',
+    textTransform: 'uppercase',
   },
 })

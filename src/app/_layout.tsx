@@ -11,11 +11,8 @@ import {
   SafeAreaProvider,
   initialWindowMetrics,
 } from 'react-native-safe-area-context'
-
-import * as React from 'react'
-import { Text, View, useColorScheme } from 'react-native'
-
 import { Slot } from 'expo-router'
+import { View, useColorScheme } from 'react-native'
 
 export { ErrorBoundary } from 'expo-router'
 
@@ -24,13 +21,11 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <React.Suspense fallback={<Text>Loading...</Text>}>
-        <SafeAreaProvider initialMetrics={initialWindowMetrics}>
-          <View style={{ flex: 1, backgroundColor: '#f9f9f9f9' }}>
-            <Slot />
-          </View>
-        </SafeAreaProvider>
-      </React.Suspense>
+      <SafeAreaProvider initialMetrics={initialWindowMetrics}>
+        <View style={{ flex: 1, backgroundColor: '#f9f9f9f9' }}>
+          <Slot />
+        </View>
+      </SafeAreaProvider>
     </ThemeProvider>
   )
 }

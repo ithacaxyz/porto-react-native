@@ -50,18 +50,6 @@ export default (context: ConfigContext): ExpoConfig => ({
       },
     ],
     [
-      'expo-sqlite',
-      {
-        enableFTS: true,
-        useSQLCipher: true,
-        ios: {
-          // You can also override the shared configurations for iOS
-          customBuildFlags:
-            '-DSQLITE_ENABLE_DBSTAT_VTAB=1 -DSQLITE_ENABLE_SNAPSHOT=1',
-        },
-      },
-    ],
-    [
       /**
        * @see https://docs.expo.dev/versions/v54.0.0/sdk/webbrowser/
        */

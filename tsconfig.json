@@ -32,7 +32,6 @@
   "files": [
     "env.d.ts",
     "index.ts",
-    "reset.d.ts",
     "app.config.ts",
     "metro.config.js",
     "babel.config.js"

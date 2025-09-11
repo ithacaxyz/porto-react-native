@@ -1,6 +1,6 @@
 # [Porto](https://porto.sh) x React Native
 
-A React Native application built with Expo v54 and [Porto](https://porto.sh) for Web3 authentication and passkey integration.
+A Porto React Native template.
 
 ## Quick Start
 

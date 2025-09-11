@@ -18,8 +18,8 @@ A React Native application built with Expo v54 and [Porto](https://porto.sh) for
 1. **Clone and install dependencies:**
 
    ```bash
-   gh repo clone o-az/porto-rn
-   cd porto-rn
+   gh repo clone o-az/porto-react-native
+   cd porto-react-native
    yarn install
    ```
 
@@ -43,6 +43,14 @@ Press:
 - `shift + a` to view Android options,
 - `i` for iOS. Note that passkeys are not supported on iOS Simulator so you need to use an actual device,
 - `w` for Web.
+
+### Crypto/Buffer setup (React Native)
+
+We install `react-native-quick-crypto` at startup (see `shims/crypto-bridge.js`).
+It provides `globalThis.crypto` (including `subtle`) and `Buffer`, so no custom Metro aliases or
+extra shims are needed for `crypto`, `buffer`, or `@noble/hashes`.
+
+Metro is configured to prefer ESM (e.g., for `viem`) via package exports, avoiding Node-only CJS deps.
 
 ### Available Commands (via [just](https://github.com/casey/just))
 

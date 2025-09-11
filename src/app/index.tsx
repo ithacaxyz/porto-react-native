@@ -64,6 +64,9 @@ export default function Tab() {
     try {
       await WalletActions.disconnect(walletClient)
       setResult('disconnected')
+      setMessage(undefined)
+      setAccount(undefined)
+      setSignature(undefined)
     } catch (error) {
       console.error('porto disconnect error', error)
       setError(error instanceof Error ? error.message : JSON.stringify(error))
@@ -86,7 +89,6 @@ export default function Tab() {
     }
   }
 
-  console.info('account', account)
   return (
     <View style={styles.outerView}>
       <Link href="https://porto.sh/sdk/guides/react-native" style={styles.link}>
@@ -187,6 +189,10 @@ const styles = StyleSheet.create({
     fontWeight: 'light',
     fontFamily: 'monospace',
     textDecorationLine: 'underline',
+    /**
+     * TODO: uncomment me when guide is live
+     */
+    display: 'none',
   },
   customButton: {
     backgroundColor: '#2196F3',

@@ -10,18 +10,6 @@ module.exports = (api) => {
         },
       ],
     ],
-    plugins: [
-      'babel-plugin-transform-import-meta',
-      [
-        'module-resolver',
-        {
-          alias: {
-            stream: 'readable-stream',
-            crypto: 'react-native-quick-crypto',
-            buffer: '@craftzdog/react-native-buffer',
-          },
-        },
-      ],
-    ],
+    plugins: ['babel-plugin-transform-import-meta'],
   }
 }

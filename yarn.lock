@@ -3679,6 +3679,11 @@ hermes-parser@0.29.1, hermes-parser@^0.29.1:
   dependencies:
     hermes-estree "0.29.1"
 
+hono@^4.9.6:
+  version "4.9.6"
+  resolved "https://registry.yarnpkg.com/hono/-/hono-4.9.6.tgz#fe1f37ec78f574b9ddcffa1d79d399b3a8a12d31"
+  integrity sha512-doVjXhSFvYZ7y0dNokjwwSahcrAfdz+/BCLvAMa/vHLzjj8+CFyV5xteThGUsKdkaasgN+gF2mUxao+SGLpUeA==
+
 hosted-git-info@^7.0.0:
   version "7.0.2"
   resolved "https://registry.yarnpkg.com/hosted-git-info/-/hosted-git-info-7.0.2.tgz#9b751acac097757667f30114607ef7b661ff4f17"
@@ -4954,12 +4959,13 @@ pngjs@^3.3.0:
   resolved "https://registry.yarnpkg.com/pngjs/-/pngjs-3.4.0.tgz#99ca7d725965fb655814eaf65f38f12bbdbf555f"
   integrity sha512-NCrCHhWmnQklfH4MtJMRjZ2a8c80qXeMlQMv2uVp9ISJMTt562SbGd6n2oq0PaPgKm7Z6pL9E2UlLIhC+SHL3w==
 
-porto@^0.0.90:
-  version "0.0.90"
-  resolved "https://registry.yarnpkg.com/porto/-/porto-0.0.90.tgz#0a61dcab36b8e1ec24b54533342a50d57c399c74"
-  integrity sha512-BGrfTcrE/STH5CvRzarT0t3KCH96Rm6yVmrjm2eYfYY/cZSh91e3G2+NRwXrYKy2WiwMEFY4Ar51W49h5m08uw==
+porto@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/porto/-/porto-0.1.0.tgz#dad04c55c8e8e8d413333d6087c7f8c056d6f953"
+  integrity sha512-wXJUaaVhCL+3SsWS4I32+uUXIsr6fuvPrwa2Z6yBlRBM3rrSWPA/+O3R4sDy7qeJxBQ24kX8QLjb7ZAyenyv1g==
   dependencies:
     effect "^3.16.12"
+    hono "^4.9.6"
     idb-keyval "^6.2.1"
     mipd "^0.0.7"
     ox "^0.9.3"

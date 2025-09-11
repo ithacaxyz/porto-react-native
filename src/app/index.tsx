@@ -179,8 +179,8 @@ const styles = StyleSheet.create({
     fontFamily: 'monospace',
   },
   link: {
-    color: '#ffffff',
-    backgroundColor: 'rgba(255, 115, 255, 0.64)',
+    // color: '#ffffff',
+    // backgroundColor: 'rgba(255, 115, 255, 0.64)',
     width: 405,
     padding: 5,
     fontSize: 16,

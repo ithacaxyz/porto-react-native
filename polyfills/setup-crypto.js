@@ -1,20 +1,28 @@
 // Ensure crypto.randomUUID exists early, before app code runs.
 // This runs before the main module via Metro serializer config.
 
-// Provides global.crypto with getRandomValues in RN.
+// Ensure the global property exists as early as possible
+;(function ensureGlobalCryptoObject() {
+  try {
+    const g = typeof globalThis !== 'undefined' ? globalThis : global
+    if (typeof g.crypto !== 'object' || !g.crypto) {
+      g.crypto = {}
+    }
+  } catch {}
+})()
+
+// Provides global.crypto.getRandomValues in RN (and defines the property if missing).
 require('react-native-get-random-values')
 
 const Crypto = require('expo-crypto')
 
 ;(function ensureRandomUUID() {
   try {
-    if (typeof global.crypto !== 'object' || !global.crypto) {
-      global.crypto = {}
-    }
-    if (typeof global.crypto.randomUUID !== 'function') {
+    const g = typeof globalThis !== 'undefined' ? globalThis : global
+    if (!g.crypto) g.crypto = {}
+    if (typeof g.crypto.randomUUID !== 'function') {
       // Delegate to Expo's native implementation.
-      global.crypto.randomUUID = () => Crypto.randomUUID()
-      crypto.randomUUID = () => Crypto.randomUUID()
+      g.crypto.randomUUID = () => Crypto.randomUUID()
     }
   } catch (e) {
     // Best-effort polyfill; avoid crashing during initialization.

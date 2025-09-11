@@ -14,8 +14,11 @@ module.exports = {
   resolver: {
     ...defaultConfiguration.resolver,
     resolveRequest: (context, moduleName, platform) => {
-      // Shim noble crypto export to be lazy over globalThis.crypto
-      if (moduleName.startsWith('@noble/hashes/crypto')) {
+      /**
+       * shim noble crypto export with a lazy getter so it picks up `globalThis.crypto`
+       * even if defined after module evaluation.
+       */
+      if (moduleName === '@noble/hashes/crypto') {
         return {
           type: 'sourceFile',
           filePath: require.resolve('./shims/noble-crypto.js'),
@@ -31,16 +34,7 @@ module.exports = {
           filePath: require.resolve(moduleName),
         }
       }
-
-      // Ensure crypto polyfills are in place before Porto loads
-      if (moduleName === 'porto') {
-        return {
-          type: 'sourceFile',
-          filePath: require.resolve('./shims/porto-shim'),
-        }
-      }
-
-      // Prefer ESM to avoid ws/node deps from CJS
+      // prefer ESM to avoid ws/node deps from CJS
       if (moduleName === 'viem' || moduleName.startsWith('viem/')) {
         const pkgDir = path.dirname(require.resolve('viem/package.json'))
         const subpath =
@@ -77,12 +71,12 @@ module.exports = {
       return context.resolveRequest(context, moduleName, platform)
     },
   },
-  serializer: {
-    ...defaultConfiguration.serializer,
-    getModulesRunBeforeMainModule: () => [
-      require.resolve('./polyfills/setup-crypto.js'),
-      ...(defaultConfiguration.serializer?.getModulesRunBeforeMainModule?.() ??
-        []),
-    ],
-  },
+  // serializer: {
+  //   ...defaultConfiguration.serializer,
+  //   getModulesRunBeforeMainModule: () => [
+  //     require.resolve('./polyfills/setup-crypto.js'),
+  //     ...(defaultConfiguration.serializer?.getModulesRunBeforeMainModule?.() ??
+  //       []),
+  //   ],
+  // },
 }

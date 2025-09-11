@@ -1,16 +1,20 @@
-// Metro shim to replace @noble/hashes/crypto export with a lazy getter.
-// Avoids capturing undefined `globalThis.crypto` during module init on RN.
-
-// biome-ignore lint/suspicious/noRedundantUseStrict: _
 'use strict'
 
+/**
+ * export a lazy `crypto` getter so @noble/hashes
+ * reads the latest `globalThis.crypto` at access time, not at module init.
+ */
 const exp = {}
 Object.defineProperty(exp, 'crypto', {
   enumerable: true,
   get() {
-    return typeof globalThis === 'object' && 'crypto' in globalThis
-      ? globalThis.crypto
-      : undefined
+    try {
+      return typeof globalThis === 'object' && 'crypto' in globalThis
+        ? globalThis.crypto
+        : undefined
+    } catch {
+      return undefined
+    }
   },
 })
 

@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
     fontFamily: 'monospace',
     textDecorationLine: 'underline',
     /**
-     * TODO: uncomment me when guide is live
+     * TODO: unhide me when guide is live
      */
     display: 'none',
   },

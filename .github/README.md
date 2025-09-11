@@ -2,6 +2,8 @@
 
 A Porto React Native template.
 
+![Demo](./demo.gif)
+
 ## Quick Start
 
 ### Prerequisites
@@ -115,7 +117,7 @@ The `./server` directory contains a [Bun](https://bun.sh) server that serves **A
 
 ### Deploying the Server
 
-I'm deploy to railway but you can deploy anywhere [./server/index.ts](./server/index.ts) can run.
+I'm deploy to railway but you can deploy anywhere [./server/index.ts](../server/index.ts) can run.
 
 ```bash
 just deploy-server

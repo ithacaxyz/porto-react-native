@@ -71,12 +71,4 @@ module.exports = {
       return context.resolveRequest(context, moduleName, platform)
     },
   },
-  // serializer: {
-  //   ...defaultConfiguration.serializer,
-  //   getModulesRunBeforeMainModule: () => [
-  //     require.resolve('./polyfills/setup-crypto.js'),
-  //     ...(defaultConfiguration.serializer?.getModulesRunBeforeMainModule?.() ??
-  //       []),
-  //   ],
-  // },
 }

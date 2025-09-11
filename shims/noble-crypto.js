@@ -1,5 +1,3 @@
-'use strict'
-
 /**
  * export a lazy `crypto` getter so @noble/hashes
  * reads the latest `globalThis.crypto` at access time, not at module init.

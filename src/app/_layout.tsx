@@ -1,7 +1,3 @@
-import '@bacons/text-decoder/install'
-
-if (typeof Buffer === 'undefined') global.Buffer = require('buffer').Buffer
-
 import {
   DarkTheme,
   DefaultTheme,

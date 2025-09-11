@@ -1,10 +1,5 @@
-import 'react-native-get-random-values'
-
-try {
-  if (!global.crypto || typeof global.crypto.getRandomValues !== 'function') {
-    const QuickCrypto = require('react-native-quick-crypto')
-    if (QuickCrypto?.install) QuickCrypto.install()
-  }
-} catch {}
+// ensure required polyfills are in place before routing loads
+import './shims/crypto-bridge.js'
+import '@bacons/text-decoder/install'
 
 import 'expo-router/entry'

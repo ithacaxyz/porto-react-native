@@ -9,16 +9,17 @@ A React Native application built with Expo v54 and [Porto](https://porto.sh) for
 - [Node.js](https://nodejs.org/) (LTS)
 - [Yarn Classic](https://classic.yarnpkg.com/) (v1.22+)
 - [Expo CLI](https://docs.expo.dev/get-started/installation/)
-- For iOS development: Xcode and iOS Simulator
+- For iOS development: XCode and iOS Simulator
 - For Android development: Android Studio and Android SDK
+- For EAS Builds: EAS CLI (for running EAS Build locally)
 
 ### Installation
 
 1. **Clone and install dependencies:**
 
    ```bash
-   git clone <your-fork-url>
-   cd porto-rn
+   gh repo clone o-az/porto-react-native
+   cd porto-react-native
    yarn install
    ```
 
@@ -32,12 +33,24 @@ A React Native application built with Expo v54 and [Porto](https://porto.sh) for
 
 ### Running the App
 
-- **Start development server:** `yarn dev` or `yarn expo start`
-- **Start with dev client:** `yarn start`
-- **Run on iOS:** `yarn ios`
-- **Run on Android:** `yarn android`
-- **Run on Web:** `yarn web`
-- **Clear cache and restart:** `just clear`
+```sh
+yarn expo start --clear --tunnel --no-build-cache --dev-client
+```
+
+Press:
+
+- `a` to run on Android. If your physical device is connected, it will automatically select it,
+- `shift + a` to view Android options,
+- `i` for iOS. Note that passkeys are not supported on iOS Simulator so you need to use an actual device,
+- `w` for Web.
+
+### Crypto/Buffer setup (React Native)
+
+We install `react-native-quick-crypto` at startup (see `shims/crypto-bridge.js`).
+It provides `globalThis.crypto` (including `subtle`) and `Buffer`, so no custom Metro aliases or
+extra shims are needed for `crypto`, `buffer`, or `@noble/hashes`.
+
+Metro is configured to prefer ESM (e.g., for `viem`) via package exports, avoiding Node-only CJS deps.
 
 ### Available Commands (via [just](https://github.com/casey/just))
 
@@ -180,7 +193,7 @@ keytool -list -v -keystore your-release-key.keystore -alias your-alias
 ## Useful Links
 
 - [Expo Documentation](https://docs.expo.dev/)
-- [Porto Documentation](https://context7.com/ithacaxyz/porto/llms.txt)
+- [Porto Documentation](https://porto.sh)
 - [Apple Universal Links](https://developer.apple.com/ios/universal-links/)
 - [Android App Links](https://developer.android.com/training/app-links)
 - [WebAuthn/Passkeys Guide](https://webauthn.guide/)

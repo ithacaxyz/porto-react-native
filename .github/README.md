@@ -20,7 +20,7 @@ A Porto React Native template.
 1. **Clone and install dependencies:**
 
    ```bash
-   gh repo clone o-az/porto-react-native
+   gh repo clone ithacaxyz/porto-react-native
    cd porto-react-native
    yarn install
    ```
@@ -45,14 +45,7 @@ Press:
 - `shift + a` to view Android options,
 - `i` for iOS. Note that passkeys are not supported on iOS Simulator so you need to use an actual device,
 - `w` for Web.
-
-### Crypto/Buffer setup (React Native)
-
-We install `react-native-quick-crypto` at startup (see `shims/crypto-bridge.js`).
-It provides `globalThis.crypto` (including `subtle`) and `Buffer`, so no custom Metro aliases or
-extra shims are needed for `crypto`, `buffer`, or `@noble/hashes`.
-
-Metro is configured to prefer ESM (e.g., for `viem`) via package exports, avoiding Node-only CJS deps.
+s.
 
 ### Available Commands (via [just](https://github.com/casey/just))
 
@@ -106,9 +99,9 @@ The `./server` directory contains a [Bun](https://bun.sh) server that serves **A
 
 ### Purpose
 
-- **iOS Universal Links**: Verifies your app can handle deep links from your domain
-- **Android App Links**: Verifies your app can handle Android deep links
 - **Passkey/WebAuthn**: Enables passkey authentication across web and mobile
+- **Android App Links**: Verifies your app can handle Android deep links
+- **iOS Universal Links**: Verifies your app can handle deep links from your domain
 
 ### Files Served
 
@@ -117,7 +110,7 @@ The `./server` directory contains a [Bun](https://bun.sh) server that serves **A
 
 ### Deploying the Server
 
-I'm deploy to railway but you can deploy anywhere [./server/index.ts](../server/index.ts) can run.
+I'm deploying to railway but you can deploy anywhere [./server/index.ts](../server/index.ts) can run.
 
 ```bash
 just deploy-server
@@ -196,6 +189,7 @@ keytool -list -v -keystore your-release-key.keystore -alias your-alias
 
 - [Expo Documentation](https://docs.expo.dev/)
 - [Porto Documentation](https://porto.sh)
+- [Apple Associated Domains](https://developer.apple.com/documentation/xcode/supporting-associated-domains)
 - [Apple Universal Links](https://developer.apple.com/ios/universal-links/)
 - [Android App Links](https://developer.android.com/training/app-links)
 - [WebAuthn/Passkeys Guide](https://webauthn.guide/)

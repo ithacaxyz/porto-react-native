@@ -36,7 +36,7 @@ A Porto React Native template.
 ### Running the App
 
 ```sh
-yarn expo start --clear --tunnel --no-build-cache --dev-client
+yarn expo start --clear --tunnel --dev-client
 ```
 
 Press:

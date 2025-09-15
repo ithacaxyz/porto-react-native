@@ -1,16 +1,15 @@
+import { Base64 } from 'ox'
 import { Platform } from 'react-native'
-import { base64 } from '@hexagon/base64'
 import * as passkey from 'react-native-passkeys'
 import type OxWebAuthn from 'node_modules/ox/_types/core/internal/webauthn'
 
 const arrayBufferToBase64URL = (buffer: ArrayBuffer) =>
-  base64.fromArrayBuffer(buffer, true)
+  Base64.fromBytes(new Uint8Array(buffer), { url: true })
 
 const utf8StringToBuffer = (value: string) =>
   new TextEncoder().encode(value) as unknown as ArrayBuffer
 
-const base64URLToArrayBuffer = (input: string) =>
-  base64.toArrayBuffer(input, true)
+const base64URLToArrayBuffer = (input: string) => Base64.toBytes(input)
 
 export const bufferToBase64URL = (input: BufferSource) =>
   btoa(

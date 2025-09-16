@@ -19,6 +19,9 @@ doctor:
     yarn expo install --fix
     bun x expo-doctor --verbose --yarn
 
+pod-install:
+    npx pod-install
+
 polyglot-postinstall:
     cd ios && pod install && cd ..
 

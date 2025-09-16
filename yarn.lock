@@ -1390,10 +1390,10 @@
   resolved "https://registry.yarnpkg.com/@expo/sudo-prompt/-/sudo-prompt-9.3.2.tgz#0fd2813402a42988e49145cab220e25bea74b308"
   integrity sha512-HHQigo3rQWKMDzYDLkubN5WQOYXJJE2eNqIQC2axC2iO3mHdwnIR7FgZVvHWtBwAdzBgAP0ECp8KqS8TiMKvgw==
 
-"@expo/ui@~0.2.0-beta.2":
-  version "0.2.0-beta.2"
-  resolved "https://registry.yarnpkg.com/@expo/ui/-/ui-0.2.0-beta.2.tgz#2a937d0f44d41d396afff088ec568887f30ec777"
-  integrity sha512-Pf/Nr9k4flJAbMfNMJ1GkaSNAk6VFC90QLH2Ux/e5KOQI5p69ttYANg2xQLw4G40TsBMFhFplAG78sOZfhLmaA==
+"@expo/ui@~0.2.0-beta.3":
+  version "0.2.0-canary-20250912-b5ce2a8"
+  resolved "https://registry.yarnpkg.com/@expo/ui/-/ui-0.2.0-canary-20250912-b5ce2a8.tgz#00e63c0502678636c5b7edf97512ea006d607c3c"
+  integrity sha512-2ErUSlwxaxJmiyNSDCeJjwiHWFBv4YNBGYiQW/+MRiHQMEwXpJo3GAHma6jqn1TFy7so8jxTgppAXYZUOrkCtg==
 
 "@expo/vector-icons@^15.0.2":
   version "15.0.2"
@@ -3296,10 +3296,10 @@ expo-network@~8.0.7:
   resolved "https://registry.yarnpkg.com/expo-network/-/expo-network-8.0.7.tgz#37f0ed984f4cc57482d3c1c3bf4d4eb3359e0b03"
   integrity sha512-qmISU2tcSHmy1PD3Zd83XXxegcvGPlZSxACTSjE+bD9o3miQRT0HS5YP5MeH97PLiRduGpyUq38kMF5N//mqrQ==
 
-expo-router@~6.0.4:
-  version "6.0.4"
-  resolved "https://registry.yarnpkg.com/expo-router/-/expo-router-6.0.4.tgz#f9c4c79e060b45d4af842549b662da0377066ace"
-  integrity sha512-RZRHAhUCCU6QNTnVhoy0PAJxbLy7OF78F4/4fwJna3cHGTtokPvJYUwz8kOZOOub/7l8jqgxnT7eKAk1dw9uXQ==
+expo-router@~6.0.5:
+  version "6.0.5"
+  resolved "https://registry.yarnpkg.com/expo-router/-/expo-router-6.0.5.tgz#c4403da2713f47c3e72bb87713530bf21bd61ae9"
+  integrity sha512-FK5y/55ppv54WjW7W7X4g5J3r+hiMKHukRYjyS6KI4i92qOWtVF42yssD/Ty90EpjKuZ8N1F72FJGdx9A1UQNA==
   dependencies:
     "@expo/metro-runtime" "^6.1.2"
     "@expo/schema-utils" "^0.1.7"
@@ -3336,6 +3336,14 @@ expo-status-bar@~3.0.8:
   integrity sha512-L248XKPhum7tvREoS1VfE0H6dPCaGtoUWzRsUv7hGKdiB4cus33Rc0sxkWkoQ77wE8stlnUlL5lvmT0oqZ3ZBw==
   dependencies:
     react-native-is-edge-to-edge "^1.2.1"
+
+expo-system-ui@~6.0.7:
+  version "6.0.7"
+  resolved "https://registry.yarnpkg.com/expo-system-ui/-/expo-system-ui-6.0.7.tgz#24bc3d36df114f1ccb7a6e3fa26f88c7a7e03788"
+  integrity sha512-NT+/r/BOg08lFI9SZO2WFi9X1ZmawkVStknioWzQq6Mt4KinoMS6yl3eLbyOLM3LoptN13Ywfo4W5KHA6TV9Ow==
+  dependencies:
+    "@react-native/normalize-colors" "0.81.4"
+    debug "^4.3.2"
 
 expo-updates-interface@~2.0.0:
   version "2.0.0"

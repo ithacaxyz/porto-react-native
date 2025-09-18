@@ -183,17 +183,7 @@ Update `server/apple-app-site-association`:
 
 ### 3. Configure Android Asset Links
 
-Follow [this guide](https://docs.expo.dev/linking/android-app-links/#create-assetlinksjson-file) and update `server/assetlinks.json`.
-
-### 4. Get Android Certificate Fingerprints
-
-```bash
-# Generate debug certificate
-just android-cert
-
-# For release builds, get the SHA256 from your release keystore:
-keytool -list -v -keystore your-release-key.keystore -alias your-alias
-```
+Use `eas credentials` and follow [this guide](https://docs.expo.dev/linking/android-app-links/#create-assetlinksjson-file) and update `server/assetlinks.json`.
 
 ### 5. Deploy and Verify
 

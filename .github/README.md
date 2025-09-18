@@ -194,7 +194,15 @@ ANDROID_HOME="$HOME/Library/Android/sdk" EAS_BUILD_DISABLE_BUNDLE_JAVASCRIPT_STE
 yarn expo start --clear --tunnel --dev-client 
 ```
 
-Press:
+### (5) - If using Android
+
+- Sign in to Google account on the emulator.
+
+### (6) - If using iOS
+
+- Make sure [Developer Mode](https://developer.apple.com/documentation/xcode/enabling-developer-mode-on-a-device) is enabled on the device.
+
+### (7) - Press:
 
 - `a` to run on Android. If your physical device is connected, it will automatically select it,
 - `shift + a` to view Android options,

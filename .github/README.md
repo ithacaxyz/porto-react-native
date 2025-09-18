@@ -8,22 +8,24 @@ A Porto React Native template.
 
 - [Node.js](https://nodejs.org) (LTS)<sup>1</sup>
 - [Yarn Classic](https://classic.yarnpkg.com) (v1.22+)<sup>1</sup>
-- [Expo](https://docs.expo.dev/get-started/installation)<sup>1.5</sup>
-- [EAS CLI](https://docs.expo.dev/build/introduction)<sup>1.5</sup>
+- [Expo](https://docs.expo.dev/get-started/installation)
+- [EAS CLI](https://docs.expo.dev/build/introduction)
 - iOS Requirements (skip if you're not building for iOS):
-  - Xcode<sup>2</sup>
-  - iOS Simulator<sup>2</sup>
-  - Ruby<sup>1</sup>
+  - Xcode 26.0<sup>2</sup>
+  - iOS Simulator 26.0<sup>2</sup>
+  - Ruby 3.4.6<sup>1</sup>
+  - Cocoapods 1.16.2<sup>1</sup>
   - [fastlane](https://github.com/fastlane/fastlane): `brew install fastlane`
 - Android Requirements (skip if you're not building for Android):
-  - Java<sup>3</sup>
-  - Gradle<sup>3</sup>
+  - Java 21.0.7<sup>3</sup>
+  - Gradle 9.0.0<sup>3</sup>
   - Android Studio<sup>4</sup>
 - Optional but highly recommended:
-  - [Expo Orbit](https://docs.expo.dev/build/orbit)<sup>1.5</sup>
+  - [Expo Orbit](https://docs.expo.dev/build/orbit)
 
-<sup>1</sup> [mise](https://mise.jdx.dev) -
-<sup>1.5</sup> use `yarn` installed with `mise`
+<sup>1</sup> [mise](https://mise.jdx.dev)
+
+- Once you have `ruby` installed with `mise`, use it to install `cocoapods`.
 
 <sup>2</sup> [xcodes](https://github.com/XcodesOrg/xcodesApp)
 

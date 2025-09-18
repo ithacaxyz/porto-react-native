@@ -8,11 +8,15 @@ A Porto React Native template.
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) (LTS)
-- [Yarn Classic](https://classic.yarnpkg.com/) (v1.22+)
-- [Expo CLI](https://docs.expo.dev/get-started/installation/)
-- For iOS development: XCode and iOS Simulator
-- For Android development: Android Studio and Android SDK
+- [Node.js](https://nodejs.org) (LTS)
+- [Yarn Classic](https://classic.yarnpkg.com) (v1.22+)
+- [Expo CLI](https://docs.expo.dev/get-started/installation)
+- For iOS development: Xcode and iOS Simulator:
+  - I use [xcodes](https://github.com/XcodesOrg/xcodes)
+  [note the `.xcode-version` [file](https://github.com/XcodesOrg/xcodes#xcode-version)]
+- For Android development: Java, Gradle, Android Studio, Android SDK
+  - I use [sdkman](https://sdkman.io)
+  [note the `.sdkmanrc` [file](https://sdkman.io/usage/#env-command)]
 - For EAS Builds: EAS CLI (for running EAS Build locally)
 
 ### Installation

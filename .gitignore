@@ -60,3 +60,5 @@ android/
 *.pem
 .vscode
 *.aab
+
+android

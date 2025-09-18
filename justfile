@@ -6,23 +6,39 @@ fmt:
     just --fmt --unstable
     biome check . --write --unsafe
 
-test:
-    echo "test"
+lint:
+    biome lint . --write --unsafe
+    yarn expo lint
 
-build:
-    echo "build"
-
-clear:
-    yarn expo start --clear
+dev:
+    yarn expo start --clear --tunnel --dev-client
 
 doctor:
     yarn expo install --fix
     bun x expo-doctor --verbose --yarn
 
-build-android:
-    watchman watch-del-all && \
-      rm -rf $TMPDIR/metro-* .expo && \
-      ANDROID_HOME="/Users/o/Library/Android/sdk" eas build --platform android --local
+# clean metro cache and expo cache
+clean-metro:
+    watchman watch-del-all
+    rm -fr '$TMPDIR/haste-map-*'
+    rm -fr '$TMPDIR/metro-cache'
+
+clean-android:
+    rm -rf android
+
+# regenerate native from `app.config.ts` and apply plugins + build-properties
+generate-android-native:
+    yarn expo prebuild --platform='android' --clean --no-install
+
+# build Android locally with EAS
+build-eas-android-local:
+    ANDROID_HOME="~/Library/Android/sdk" EAS_BUILD_DISABLE_BUNDLE_JAVASCRIPT_STEP=1 eas build --platform android --local
+
+# build android
+build-android: clean-android clean-metro generate-android-native build-eas-android-local
+
+clean-ios:
+    rm -rf ios
 
 polyglot-postinstall:
     cd ios && pod install && cd ..

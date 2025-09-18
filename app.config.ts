@@ -60,7 +60,7 @@ export default (context: ConfigContext): ExpoConfig => ({
       },
     ],
     [
-      './plugins/with-android-plugin.ts',
+      './plugins/android.ts',
       {
         enableDebugSuffix: true,
         versionNameSuffix: '-debug',

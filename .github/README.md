@@ -185,6 +185,23 @@ keytool -list -v -keystore your-release-key.keystore -alias your-alias
    - `https://yourdomain.com/.well-known/assetlinks.json`
 3. Test deep links and passkey functionality
 
+### 6. `app.config.ts` as the Android & iOS Source of Truth
+
+In order to maintain a single source of truth for Android and iOS, we need to strictly follow a few rules
+
+- Make prebuild run every time and codify any native edits as config plugins or patches:
+  
+  ```bash
+  yarn expo prebuild --clean --no-install
+  ```
+
+- Never hand‑edit `android/` and `ios/` directories and keep them out of git.
+- Use config plugins (or patch-project) for any custom native tweaks.
+- When we need to make changes to `android/` and `ios/`.
+we do them through Expo's [patch-project](https://docs.expo.dev/config-plugins/patch-project/) plugin.
+- Put all native changes behind config plugins or patch-project.
+- Run `yarn expo prebuild` whenever `app.config.ts` is updated.
+
 ## Useful Links
 
 - [Expo Documentation](https://docs.expo.dev/)

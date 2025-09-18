@@ -46,17 +46,8 @@ export default (context: ConfigContext): ExpoConfig => ({
         },
       },
     ],
+    ['expo-web-browser', { experimentalLauncherActivity: true }],
     [
-      /**
-       * @see https://docs.expo.dev/versions/v54.0.0/sdk/webbrowser/
-       */
-      'expo-web-browser',
-      { experimentalLauncherActivity: true },
-    ],
-    [
-      /**
-       * @see https://docs.expo.dev/versions/latest/sdk/local-authentication/
-       */
       'expo-local-authentication',
       { faceIDPermission: 'Allow $(PRODUCT_NAME) to use Face ID.' },
     ],
@@ -66,6 +57,17 @@ export default (context: ConfigContext): ExpoConfig => ({
         configureAndroidBackup: true,
         faceIDPermission:
           'Allow $(PRODUCT_NAME) to access your Face ID biometric data.',
+      },
+    ],
+    [
+      './plugins/with-android-plugin.ts',
+      {
+        enableDebugSuffix: true,
+        versionNameSuffix: '-debug',
+        jvmArgs:
+          '-Xmx4096m -XX:MaxMetaspaceSize=1024m -Dfile.encoding=UTF-8 -Dkotlin.daemon.jvm.options=-Xmx2048m',
+        workersMax: 2,
+        disableReleaseLint: true,
       },
     ],
   ],

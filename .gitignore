@@ -42,6 +42,7 @@ credentials.json
 
 # ios
 # android
+android/
 *.apk
 .idea
 
@@ -58,3 +59,4 @@ credentials.json
 *.crl
 *.pem
 .vscode
+*.aab

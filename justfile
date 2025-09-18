@@ -19,6 +19,11 @@ doctor:
     yarn expo install --fix
     bun x expo-doctor --verbose --yarn
 
+build-android:
+    watchman watch-del-all && \
+      rm -rf $TMPDIR/metro-* .expo && \
+      ANDROID_HOME="/Users/o/Library/Android/sdk" eas build --platform android --local
+
 polyglot-postinstall:
     cd ios && pod install && cd ..
 

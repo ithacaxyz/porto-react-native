@@ -1,5 +1,11 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
+android {
+  dexOptions {
+    javaMaxHeapSize "3g"
+  }
+}
+
 buildscript {
   repositories {
     google()
@@ -22,29 +28,3 @@ allprojects {
 
 apply plugin: "expo-root-project"
 apply plugin: "com.facebook.react.rootproject"
-
-// Ensure consistent Kotlin JVM target across all modules (fixes AGP/Kotlin 2.1 defaults)
-subprojects { subproject ->
-  def configureKotlin = {
-    try {
-      def kotlinExt = subproject.extensions.findByName('kotlin')
-      if (kotlinExt && kotlinExt.metaClass.respondsTo(kotlinExt, 'jvmToolchain', Integer)) {
-        kotlinExt.jvmToolchain(17)
-      }
-    } catch (ignored) {}
-    subproject.tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach { t ->
-      try {
-        if (t.hasProperty('kotlinOptions') && t.kotlinOptions != null) {
-          t.kotlinOptions.jvmTarget = '17'
-        }
-        if (t.hasProperty('compilerOptions') && t.compilerOptions != null) {
-          def JvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget
-          t.compilerOptions.jvmTarget.set(JvmTarget.JVM_17)
-        }
-      } catch (ignored) {}
-    }
-  }
-  subproject.plugins.withId('org.jetbrains.kotlin.android') { configureKotlin() }
-  subproject.plugins.withId('kotlin-android') { configureKotlin() }
-  subproject.plugins.withId('org.jetbrains.kotlin.jvm') { configureKotlin() }
-}

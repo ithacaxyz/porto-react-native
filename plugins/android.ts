@@ -15,6 +15,7 @@ type Props = {
   enableDebugSuffix?: boolean
   versionNameSuffix?: string
   disableReleaseLint?: boolean
+  enableReleaseSigning?: boolean
 }
 
 const DEFAULT_JVMARGS =
@@ -27,6 +28,7 @@ const withAndroidPlugin: ConfigPlugin<Props> = (config, props = {}) => {
     jvmArgs = DEFAULT_JVMARGS,
     disableReleaseLint = true,
     versionNameSuffix = '-debug',
+    enableReleaseSigning = true,
   } = props
 
   // Gradle properties (memory & workers)
@@ -52,7 +54,7 @@ const withAndroidPlugin: ConfigPlugin<Props> = (config, props = {}) => {
     return props
   })
 
-  // build.gradle edits (debug suffix + lint)
+  // build.gradle edits (debug suffix + lint + release signing)
   config = withAppBuildGradle(config, (props) => {
     let src = props.modResults.contents
 
@@ -112,6 +114,55 @@ const withAndroidPlugin: ConfigPlugin<Props> = (config, props = {}) => {
           comment: '//',
         })
         if (rAndroid.didMerge) src = rAndroid.contents
+      }
+    }
+
+    // Add release signingConfig and wire buildTypes.release to it conditionally
+    if (enableReleaseSigning) {
+      // 1) Ensure a release signing config exists with property-based fields
+      if (!/signingConfigs\s*\{[\s\S]*?\brelease\s*\{/.test(src)) {
+        const releaseSigning = `        release {\n            if (findProperty('PORTO_RELEASE_STORE_FILE')) {\n                storeFile file(findProperty('PORTO_RELEASE_STORE_FILE'))\n                storePassword findProperty('PORTO_RELEASE_STORE_PASSWORD')\n                keyAlias findProperty('PORTO_RELEASE_KEY_ALIAS')\n                keyPassword findProperty('PORTO_RELEASE_KEY_PASSWORD')\n            }\n        }`
+        const rSign = mergeContents({
+          tag: 'with-android-plugin-signing-release',
+          src,
+          newSrc: releaseSigning,
+          anchor: /signingConfigs\s*\{/,
+          offset: 1,
+          comment: '//',
+        })
+        if (rSign.didMerge) src = rSign.contents
+      }
+
+      // 2) In buildTypes.release, replace signingConfig with conditional one
+      const btMatch = src.match(/buildTypes\s*\{/)
+      if (btMatch) {
+        // Extract buildTypes block, then locate release { ... }
+        const bracePos = btMatch.index! + btMatch[0].length - 1
+        let i = bracePos
+        let depth = 1
+        while (i < src.length && depth > 0) {
+          i++
+          const ch = src[i]
+          if (ch === '{') depth++
+          else if (ch === '}') depth--
+        }
+        const btStart = btMatch.index!
+        const btEnd = i
+        const btBlock = src.slice(btStart, btEnd + 1)
+
+        const relOpen = btBlock.match(/\brelease\s*\{/)
+        if (relOpen) {
+          const relStart = btStart + (relOpen.index || 0) + relOpen[0].length
+          const before = src.slice(0, relStart)
+          const after = src.slice(relStart)
+          let relBody = after
+          // Replace the first occurrence of signingConfig signingConfigs.debug inside release block only
+          relBody = relBody.replace(
+            /signingConfig\s+signingConfigs\.debug/,
+            "signingConfig (findProperty('PORTO_RELEASE_STORE_FILE') ? signingConfigs.release : signingConfigs.debug)",
+          )
+          src = before + relBody
+        }
       }
     }
 

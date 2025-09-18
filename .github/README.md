@@ -2,32 +2,42 @@
 
 A Porto React Native template.
 
-![Demo](./demo.gif)
-
 ## Quick Start
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org) (LTS)
-- [Yarn Classic](https://classic.yarnpkg.com) (v1.22+)
-- [Expo CLI](https://docs.expo.dev/get-started/installation)
-- [EAS CLI](https://docs.expo.dev/build/introduction)
-- iOS Requirements:
-  - Xcode [I use [xcodes](https://github.com/XcodesOrg/xcodes)]
-  - iOS Simulator [I use [xcodes](https://github.com/XcodesOrg/xcodes)]
-  - Ruby [I use [mise](https://github.com/jdx/mise)]
-  - [fastlame](https://github.com/fastlane/fastlane): `brew install fastlane`
-- Android Requirements:
-  - Java [I use [sdkman](https://sdkman.io)]
-  - Gradle [I use [sdkman](https://sdkman.io)]
-  - Android SDK
-  - Android Studio
+- [Node.js](https://nodejs.org) (LTS)<sup>1</sup>
+- [Yarn Classic](https://classic.yarnpkg.com) (v1.22+)<sup>1</sup>
+- [Expo](https://docs.expo.dev/get-started/installation)<sup>1.5</sup>
+- [EAS CLI](https://docs.expo.dev/build/introduction)<sup>1.5</sup>
+- iOS Requirements (skip if you're not building for iOS):
+  - Xcode<sup>2</sup>
+  - iOS Simulator<sup>2</sup>
+  - Ruby<sup>1</sup>
+  - [fastlane](https://github.com/fastlane/fastlane): `brew install fastlane`
+- Android Requirements (skip if you're not building for Android):
+  - Java<sup>3</sup>
+  - Gradle<sup>3</sup>
+  - Android Studio<sup>4</sup>
+- Optional but highly recommended:
+  - [Expo Orbit](https://docs.expo.dev/build/orbit)<sup>1.5</sup>
 
-#### Optional, but highly recommended
+<sup>1</sup> [mise](https://mise.jdx.dev) -
+<sup>1.5</sup> use `yarn` installed with `mise`
 
-- [Expo Orbit](https://docs.expo.dev/build/orbit)
+<sup>2</sup> [xcodes](https://github.com/XcodesOrg/xcodesApp)
 
-### Installation
+<sup>3</sup> [sdkman](https://sdkman.io): run `sdk env install` in repo root to auto install Java and Gradle
+
+<sup>4</sup> [JetBrains Toolbox](https://www.jetbrains.com/toolbox-app).
+Once you have Android Studio installed:
+
+- install a newer SDK Platform Tools - I use 36.1 ([demo](https://share.cleanshot.com/KJ6rYZjw))
+- install a newer virtual device with Google Play Services enabled - I use Pixel 9 Pro Fold ([demo](https://share.cleanshot.com/LhdhbMlS))
+
+____
+
+### Clone Repository & Install Dependencies
 
 ```bash
 gh repo clone ithacaxyz/porto-react-native
@@ -35,66 +45,7 @@ cd porto-react-native
 yarn install
 ```
 
-## Development
-
-### Running the App
-
-(1) - Build once as a dev client, then iterate via Metro.
-
-```bash
-eas build --platform android --profile development --local
-```
-  
-(2) - Run Android or iOS Expo Start to install the app on your device.
-
-```bash
-yarn expo run:android
-```
-
-```bash
-yarn expo run:ios
-```
-
-(3) - Now you can run `start` with `--dev-client` for development.
-
-> [!IMPORTANT]
-> Repeat steps (1) and (2) whenever you make changes to `app.config.ts` or to plugins or when you install new dependencies.
-
-```bash
-yarn expo start --clear --tunnel --dev-client
-```
-
-Press:
-
-- `a` to run on Android. If your physical device is connected, it will automatically select it,
-- `shift + a` to view Android options,
-- `i` for iOS. Note that passkeys are not supported on iOS Simulator so you need to use an actual device,
-- `w` for Web.
-s.
-
-When you install / update dependencies, run the following to check dependencies are deduplicated:
-
-```bash
-yarn expo install --fix && npx expo-doctor --verbose --yarn
-```
-
-### Available Commands (via [just](https://github.com/casey/just))
-
-> [!IMPORTANT]
-> You have to build at least once before you can run the app.
-> You have to build any time you make changes to `app.config.ts` or to plugins or when you install new dependencies.
-
-- `just build-ios` - Build iOS
-- `just build-android` - Build Android
-
-- `just fmt` - Format code with Biome
-- `just dev` - Run the app and launch web, android or ios
-- `just doctor` - Fix dependencies and run expo doctor
-- `just deploy-server` - Deploy server to Railway
-- `just android-device` - Mirror Android device screen
-- `just android-cert` - Generate Android debug certificate
-
-## Configuration for Forks
+## Configuration
 
 When forking this project, update the following fields in `app.config.ts`:
 
@@ -193,22 +144,88 @@ Use `eas credentials` and follow [this guide](https://docs.expo.dev/linking/andr
    - `https://yourdomain.com/.well-known/assetlinks.json`
 3. Test deep links and passkey functionality
 
-### 6. `app.config.ts` as the Android & iOS Source of Truth
+## Development
 
-In order to maintain a single source of truth for Android and iOS, we need to strictly follow a few rules
+### (0) - Clear Old Artifacts
 
-- Make prebuild run every time and codify any native edits as config plugins or patches:
-  
-  ```bash
-  yarn expo prebuild --clean --no-install
+```sh
+rm -fr '$TMPDIR/haste-map-*'
+rm -fr '$TMPDIR/metro-cache'
+
+rm -rf ios
+rm -rf android
+```
+
+### (1) - Prebuild
+
+Generate native `ios`/`android` directory, apply plugins and `build-properties`
+
+```bash
+EXPO_NO_GIT_STATUS=1 yarn expo prebuild --platform='android' --clean
+```
+
+### (2) - Build with EAS CLI
+
+```bash
+EAS_BUILD_DISABLE_BUNDLE_JAVASCRIPT_STEP=1 eas build \
+  --platform='android' \
+  --non-interactive \
+  --local
+```
+
+### (3) - Install App on Emulator/Simulator/Device
+
+- Android:
+  Your `.apk` file will have a dfferent number. Locate it in the repository root.
+
+  ```sh
+  adb install -r build-1234567890.apk
   ```
 
-- Never hand‑edit `android/` and `ios/` directories and keep them out of git.
-- Use config plugins (or patch-project) for any custom native tweaks.
-- When we need to make changes to `android/` and `ios/`.
-we do them through Expo's [patch-project](https://docs.expo.dev/config-plugins/patch-project/) plugin.
-- Put all native changes behind config plugins or patch-project.
-- Run `yarn expo prebuild` whenever `app.config.ts` is updated.
+- iOS:
+
+  ```sh
+  xcrun simctl install booted build-1234567890.ipa
+  ```
+
+### (4) - Run Emulator/Android/iPhone
+
+```sh
+yarn expo start --clear --tunnel --dev-client 
+```
+
+Press:
+
+- `a` to run on Android. If your physical device is connected, it will automatically select it,
+- `shift + a` to view Android options,
+- `i` for iOS. Note that passkeys are not supported on iOS Simulator so you need to use an actual device,
+- `w` for Web.
+s.
+
+When you install / update dependencies, run the following to check dependencies are deduplicated:
+
+```bash
+yarn expo install --fix && npx expo-doctor --verbose --yarn
+```
+
+If Expo doesn't resolve deduplication, run: `node_modules/.bin/bun scripts/dedupe.ts`
+
+### Available Commands (via [just](https://github.com/casey/just))
+
+> [!IMPORTANT]
+>
+> You have to build at least once before you can run the app.
+> You have to build any time you make changes to `app.config.ts` or to plugins or when you install new dependencies.
+
+- `just build-ios` - Build iOS
+- `just build-android` - Build Android
+
+- `just fmt` - Format code with Biome
+- `just dev` - Run the app and launch web, android or ios
+- `just doctor` - Fix dependencies and run expo doctor
+- `just deploy-server` - Deploy server to Railway
+- `just android-device` - Mirror Android device screen
+- `just android-cert` - Generate Android debug certificate
 
 ## Useful Links
 

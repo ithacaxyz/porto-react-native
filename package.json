@@ -67,6 +67,7 @@
     "@types/react-dom": "^19.1.9",
     "babel-plugin-module-resolver": "^5.0.2",
     "babel-plugin-transform-import-meta": "^2.3.3",
+    "bun": "^1.2.22",
     "nypm": "^0.6.1",
     "patch-package": "^8.0.0",
     "patch-project": "^0.3.1",

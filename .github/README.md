@@ -167,7 +167,7 @@ EXPO_NO_GIT_STATUS=1 yarn expo prebuild --platform='android' --clean
 ### (2) - Build with EAS CLI
 
 ```bash
-EAS_BUILD_DISABLE_BUNDLE_JAVASCRIPT_STEP=1 eas build \
+ANDROID_HOME="$HOME/Library/Android/sdk" EAS_BUILD_DISABLE_BUNDLE_JAVASCRIPT_STEP=1 eas build \
   --platform='android' \
   --non-interactive \
   --local

@@ -8,14 +8,13 @@ fmt:
 
 lint:
     biome lint . --write --unsafe
-    yarn expo lint
 
 dev:
     yarn expo start --clear --tunnel --dev-client
 
 doctor:
-    yarn expo install --fix
-    bun x expo-doctor --verbose --yarn
+    yarn expo install --fix && npx expo-doctor --verbose --yarn
+    bun x expo config --full
 
 # clean metro cache and expo cache
 clean-metro:
@@ -23,22 +22,35 @@ clean-metro:
     rm -fr '$TMPDIR/haste-map-*'
     rm -fr '$TMPDIR/metro-cache'
 
+clean-ios:
+    rm -rf ios
+
 clean-android:
     rm -rf android
 
-# regenerate native from `app.config.ts` and apply plugins + build-properties
+# regenerate native ./ios from `app.config.ts` and apply plugins + build-properties
+generate-ios-native:
+    EXPO_NO_GIT_STATUS=1 yarn expo prebuild --platform='ios' --clean
+
+# regenerate native ./android from `app.config.ts` and apply plugins + build-properties
 generate-android-native:
-    yarn expo prebuild --platform='android' --clean --no-install
+    EXPO_NO_GIT_STATUS=1 yarn expo prebuild --platform='android' --clean
+
+# build iOS locally with EAS
+build-eas-ios-local:
+    EAS_BUILD_DISABLE_BUNDLE_JAVASCRIPT_STEP=1 eas build \
+        --platform ios --local --non-interactive
 
 # build Android locally with EAS
 build-eas-android-local:
-    ANDROID_HOME="~/Library/Android/sdk" EAS_BUILD_DISABLE_BUNDLE_JAVASCRIPT_STEP=1 eas build --platform android --local
+    ANDROID_HOME="~/Library/Android/sdk" EAS_BUILD_DISABLE_BUNDLE_JAVASCRIPT_STEP=1 eas build \
+        --platform android --local --non-interactive
 
 # build android
 build-android: clean-android clean-metro generate-android-native build-eas-android-local
 
-clean-ios:
-    rm -rf ios
+# build iOS
+build-ios: clean-ios clean-metro generate-ios-native build-eas-ios-local
 
 polyglot-postinstall:
     cd ios && pod install && cd ..

@@ -11,35 +11,56 @@ A Porto React Native template.
 - [Node.js](https://nodejs.org) (LTS)
 - [Yarn Classic](https://classic.yarnpkg.com) (v1.22+)
 - [Expo CLI](https://docs.expo.dev/get-started/installation)
-- For iOS development: Xcode and iOS Simulator:
-  - I use [xcodes](https://github.com/XcodesOrg/xcodes)
-  [note the `.xcode-version` [file](https://github.com/XcodesOrg/xcodes#xcode-version)]
-- For Android development: Java, Gradle, Android Studio, Android SDK
-  - I use [sdkman](https://sdkman.io)
-  [note the `.sdkmanrc` [file](https://sdkman.io/usage/#env-command)]
-- For EAS Builds: EAS CLI (for running EAS Build locally)
+- [EAS CLI](https://docs.expo.dev/build/introduction)
+- iOS Requirements:
+  - Xcode [I use [xcodes](https://github.com/XcodesOrg/xcodes)]
+  - iOS Simulator [I use [xcodes](https://github.com/XcodesOrg/xcodes)]
+  - Ruby [I use [mise](https://github.com/jdx/mise)]
+  - [fastlame](https://github.com/fastlane/fastlane): `brew install fastlane`
+- Android Requirements:
+  - Java [I use [sdkman](https://sdkman.io)]
+  - Gradle [I use [sdkman](https://sdkman.io)]
+  - Android SDK
+  - Android Studio
+
+#### Optional, but highly recommended
+
+- [Expo Orbit](https://docs.expo.dev/build/orbit)
 
 ### Installation
 
-1. **Clone and install dependencies:**
-
-   ```bash
-   gh repo clone ithacaxyz/porto-react-native
-   cd porto-react-native
-   yarn install
-   ```
-
-2. **Install iOS dependencies (macOS only):**
-
-   ```bash
-   cd ios && pod install && cd ..
-   ```
+```bash
+gh repo clone ithacaxyz/porto-react-native
+cd porto-react-native
+yarn install
+```
 
 ## Development
 
 ### Running the App
 
-```sh
+(1) - Build once as a dev client, then iterate via Metro.
+
+```bash
+eas build --platform android --profile development --local
+```
+  
+(2) - Run Android or iOS Expo Start to install the app on your device.
+
+```bash
+yarn expo run:android
+```
+
+```bash
+yarn expo run:ios
+```
+
+(3) - Now you can run `start` with `--dev-client` for development.
+
+> [!IMPORTANT]
+> Repeat steps (1) and (2) whenever you make changes to `app.config.ts` or to plugins or when you install new dependencies.
+
+```bash
 yarn expo start --clear --tunnel --dev-client
 ```
 
@@ -51,11 +72,23 @@ Press:
 - `w` for Web.
 s.
 
+When you install / update dependencies, run the following to check dependencies are deduplicated:
+
+```bash
+yarn expo install --fix && npx expo-doctor --verbose --yarn
+```
+
 ### Available Commands (via [just](https://github.com/casey/just))
 
+> [!IMPORTANT]
+> You have to build at least once before you can run the app.
+> You have to build any time you make changes to `app.config.ts` or to plugins or when you install new dependencies.
+
+- `just build-ios` - Build iOS
+- `just build-android` - Build Android
+
 - `just fmt` - Format code with Biome
-- `just test` - Run tests
-- `just build` - Build the project
+- `just dev` - Run the app and launch web, android or ios
 - `just doctor` - Fix dependencies and run expo doctor
 - `just deploy-server` - Deploy server to Railway
 - `just android-device` - Mirror Android device screen
@@ -150,26 +183,7 @@ Update `server/apple-app-site-association`:
 
 ### 3. Configure Android Asset Links
 
-Update `server/assetlinks.json`:
-
-```json
-[
-  {
-    "relation": [
-      "delegate_permission/common.handle_all_urls",
-      "delegate_permission/common.get_login_creds"
-    ],
-    "target": {
-      "namespace": "android_app",
-      "package_name": "your.android.package",
-      "sha256_cert_fingerprints": [
-        "YOUR_RELEASE_KEY_SHA256",
-        "YOUR_DEBUG_KEY_SHA256"
-      ]
-    }
-  }
-]
-```
+Follow [this guide](https://docs.expo.dev/linking/android-app-links/#create-assetlinksjson-file) and update `server/assetlinks.json`.
 
 ### 4. Get Android Certificate Fingerprints
 

@@ -12,6 +12,9 @@ export default (context: ConfigContext): ExpoConfig => ({
   userInterfaceStyle: 'automatic',
   newArchEnabled: true,
   ios: {
+    config: {
+      usesNonExemptEncryption: false,
+    },
     supportsTablet: true,
     appleTeamId: 'Q7767Q7TRJ',
     bundleIdentifier: 'org.name.portorn',
@@ -62,13 +65,18 @@ export default (context: ConfigContext): ExpoConfig => ({
     [
       './plugins/android.ts',
       {
-        enableDebugSuffix: true,
-        versionNameSuffix: '-debug',
-        jvmArgs:
-          '-Xmx4096m -XX:MaxMetaspaceSize=1024m -Dfile.encoding=UTF-8 -Dkotlin.daemon.jvm.options=-Xmx2048m',
         workersMax: 2,
+        enableDebugSuffix: true,
         disableReleaseLint: true,
+        versionNameSuffix: '-debug',
+        jvmArgs: [
+          '-Xmx4096m',
+          '-XX:MaxMetaspaceSize=1024m',
+          '-Dfile.encoding=UTF-8',
+          '-Dkotlin.daemon.jvm.options=-Xmx2048m',
+        ].join(' '),
       },
     ],
+    ['./plugins/ios.ts', { enableDebugSuffix: true, bundleIdSuffix: '.debug' }],
   ],
 })

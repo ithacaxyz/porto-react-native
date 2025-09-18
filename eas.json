@@ -5,23 +5,49 @@
     "appVersionSource": "remote"
   },
   "build": {
+    "base": {
+      "yarn": "1.22.22",
+      "node": "22.19.0",
+      "ios": {
+        "image": "latest",
+        "simulator": false,
+        "env": {
+          "PLATFORM": "ios"
+        }
+      },
+      "android": {
+        "image": "auto",
+        "distribution": "internal",
+        "withoutCredentials": true,
+        "env": {
+          "PLATFORM": "android"
+        }
+      }
+    },
     "development": {
-      "developmentClient": true,
-      "distribution": "internal"
-    },
-    "preview": {
-      "distribution": "internal"
-    },
-    "production": {
-      "autoIncrement": true
-    },
-    "development-simulator": {
+      "extends": "base",
       "developmentClient": true,
       "distribution": "internal",
-      "ios": {
-        "simulator": true
+      "env": {
+        "ENVIRONMENT": "development",
+        "EAS_BUILD_DISABLE_BUNDLE_JAVASCRIPT_STEP": "1"
+      }
+    },
+    "preview": {
+      "extends": "base",
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
       },
-      "environment": "development"
+      "env": {
+        "ENVIRONMENT": "preview"
+      }
+    },
+    "production": {
+      "extends": "base",
+      "env": {
+        "ENVIRONMENT": "production"
+      }
     }
   },
   "submit": {

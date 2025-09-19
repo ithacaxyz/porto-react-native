@@ -3181,10 +3181,10 @@ expo-blob@^0.1.0:
   resolved "https://registry.yarnpkg.com/expo-blob/-/expo-blob-0.1.6.tgz#18c041faacf7148415b97c8ce463c37b604f346e"
   integrity sha512-YOJe6zaw8JJxdG9dASTk88yklGpRcWwTNeMmKuGaEhRc2KagUJgOSrPmuNPdiNHY8kmXATFu6C9k3H/4Kcd9VQ==
 
-expo-build-properties@~1.0.8:
-  version "1.0.8"
-  resolved "https://registry.yarnpkg.com/expo-build-properties/-/expo-build-properties-1.0.8.tgz#c973cc922ec6972df112eea76a1bf9ac0639216f"
-  integrity sha512-Ram9Jcg2WkbE7bRopWacMnXIhqUP6P13cQoj4rSfXLpJVOyGGvuMiw3rs1vzMbWSHxhvvsX2NvYXXIrZatexuw==
+expo-build-properties@~1.0.9:
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/expo-build-properties/-/expo-build-properties-1.0.9.tgz#71f0ce813a8431937a3db25a91f1bb4b1a6214ae"
+  integrity sha512-2icttCy3OPTk/GWIFt+vwA+0hup53jnmYb7JKRbvNvrrOrz+WblzpeoiaOleI2dYG/vjwpNO8to8qVyKhYJtrQ==
   dependencies:
     ajv "^8.11.0"
     semver "^7.6.0"
@@ -3235,10 +3235,10 @@ expo-dev-menu@7.0.11, expo-dev-menu@^7.0.10:
   dependencies:
     expo-dev-menu-interface "2.0.0"
 
-expo-device@~8.0.7:
-  version "8.0.7"
-  resolved "https://registry.yarnpkg.com/expo-device/-/expo-device-8.0.7.tgz#38d1d2c2a8008631bada2d6dca0612f8d350b23a"
-  integrity sha512-4psIFiFQbkcr2VAaOgCBsC0q7FPLtqsd0gjJmpCccxstvHMd9dmh7A+jSIwkFkEAcrkz+t1KxTp7McJAL+8sYA==
+expo-device@~8.0.8:
+  version "8.0.8"
+  resolved "https://registry.yarnpkg.com/expo-device/-/expo-device-8.0.8.tgz#2d6e3dbc4e910fcffa90a371112d9da0001f0396"
+  integrity sha512-t515WOkeVgIeO3izj+FoXodKTHiSxZ2uF5E9YvCwiR4kANAjvyjFP3vSls2Utjx5ss8y652pZTgh3tOYQmwuZA==
   dependencies:
     ua-parser-js "^0.7.33"
 
@@ -3311,10 +3311,10 @@ expo-network@~8.0.7:
   resolved "https://registry.yarnpkg.com/expo-network/-/expo-network-8.0.7.tgz#37f0ed984f4cc57482d3c1c3bf4d4eb3359e0b03"
   integrity sha512-qmISU2tcSHmy1PD3Zd83XXxegcvGPlZSxACTSjE+bD9o3miQRT0HS5YP5MeH97PLiRduGpyUq38kMF5N//mqrQ==
 
-expo-router@~6.0.6:
-  version "6.0.6"
-  resolved "https://registry.yarnpkg.com/expo-router/-/expo-router-6.0.6.tgz#bdcbbe59fa3ccf4001f35488d5265935e090f4d6"
-  integrity sha512-uSuKQanivBI9RtwmAznLI7It5aPwQLVL2tVBPAOJ70tv6BzP62SpVCf0I8o0j9PmEzORPRLrU2LbQOL962yBHg==
+expo-router@~6.0.7:
+  version "6.0.7"
+  resolved "https://registry.yarnpkg.com/expo-router/-/expo-router-6.0.7.tgz#9bba7e6528887126714ff942a466f483b47d529b"
+  integrity sha512-dP/35aQadCuplEP99CZ0sLrVpnCFCQGnCBtFlI0Tph75PbepdWhI7XC0Vzt7MoNBLF9NW80q5CeZdXTvybc+4w==
   dependencies:
     "@expo/metro-runtime" "^6.1.2"
     "@expo/schema-utils" "^0.1.7"

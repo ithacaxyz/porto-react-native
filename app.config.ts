@@ -42,7 +42,13 @@ export default (context: ConfigContext): ExpoConfig => ({
     [
       'expo-build-properties',
       {
+        ios: {
+          deploymentTarget: '26.0',
+        },
         android: {
+          targetSdkVersion: 36,
+          compileSdkVersion: 36,
+          buildToolsVersion: '36.0.0',
           packagingOptions: {
             pickFirst: ['**/libcrypto.so'],
           },
@@ -66,7 +72,7 @@ export default (context: ConfigContext): ExpoConfig => ({
       './plugins/android.ts',
       {
         workersMax: 2,
-        enableDebugSuffix: true,
+        enableDebugSuffix: false,
         disableReleaseLint: true,
         versionNameSuffix: '-debug',
         jvmArgs: [
@@ -77,6 +83,9 @@ export default (context: ConfigContext): ExpoConfig => ({
         ].join(' '),
       },
     ],
-    ['./plugins/ios.ts', { enableDebugSuffix: true, bundleIdSuffix: '.debug' }],
+    [
+      './plugins/ios.ts',
+      { enableDebugSuffix: false, bundleIdSuffix: '.debug' },
+    ],
   ],
 })

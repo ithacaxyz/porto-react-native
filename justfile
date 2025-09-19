@@ -43,7 +43,7 @@ build-eas-ios-local:
 
 # build Android locally with EAS
 build-eas-android-local:
-    ANDROID_HOME="~/Library/Android/sdk" EAS_BUILD_DISABLE_BUNDLE_JAVASCRIPT_STEP=1 eas build \
+    ANDROID_HOME="/Users/o/Library/Android/sdk" EAS_BUILD_DISABLE_BUNDLE_JAVASCRIPT_STEP=1 eas build \
         --platform android --local --non-interactive
 
 # build android

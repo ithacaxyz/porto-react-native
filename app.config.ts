@@ -9,8 +9,9 @@ export default (context: ConfigContext): ExpoConfig => ({
   name: scheme,
   scheme: scheme,
   version: '1.0.0',
-  userInterfaceStyle: 'automatic',
   newArchEnabled: true,
+  userInterfaceStyle: 'automatic',
+  platforms: ['android', 'ios', 'web'],
   ios: {
     config: {
       usesNonExemptEncryption: false,
@@ -27,13 +28,13 @@ export default (context: ConfigContext): ExpoConfig => ({
     output: 'single',
     bundler: 'metro',
   },
+  experiments: {
+    typedRoutes: true,
+  },
   extra: {
     eas: {
       projectId: '2465a0e5-8758-4bbf-8641-49004b3ea709',
     },
-  },
-  experiments: {
-    typedRoutes: true,
   },
   plugins: [
     ['patch-project'],
@@ -42,13 +43,7 @@ export default (context: ConfigContext): ExpoConfig => ({
     [
       'expo-build-properties',
       {
-        ios: {
-          deploymentTarget: '26.0',
-        },
         android: {
-          targetSdkVersion: 36,
-          compileSdkVersion: 36,
-          buildToolsVersion: '36.0.0',
           packagingOptions: {
             pickFirst: ['**/libcrypto.so'],
           },

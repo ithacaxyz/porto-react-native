@@ -3,8 +3,8 @@ import {
   Text,
   Button,
   Platform,
-  StyleSheet,
   TextInput,
+  StyleSheet,
   TouchableOpacity,
 } from 'react-native'
 import * as React from 'react'

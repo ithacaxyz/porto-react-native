@@ -31,8 +31,8 @@ export default function RootLayout() {
           </TabTrigger>
           <View style={{ height: 50, width: 6 }} />
           <TabTrigger
-            name="web"
-            href="/web"
+            name="auth"
+            href="/auth"
             style={{
               height: 50,
               width: '50%',
@@ -41,7 +41,7 @@ export default function RootLayout() {
               backgroundColor: 'darkgray',
             }}
           >
-            <Text style={{ fontSize: 24, fontWeight: 'bold' }}>Web</Text>
+            <Text style={{ fontSize: 24, fontWeight: 'bold' }}>Auth</Text>
           </TabTrigger>
         </TabList>
       </Tabs>

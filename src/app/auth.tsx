@@ -1,7 +1,9 @@
 import * as React from 'react'
 import { porto } from '#lib/porto.ts'
 import Constants from 'expo-constants'
+import * as Linking from 'expo-linking'
 import * as WebBrowser from 'expo-web-browser'
+import * as AuthSession from 'expo-auth-session'
 import { Button, Text, View, StyleSheet, Platform } from 'react-native'
 
 /**
@@ -48,6 +50,21 @@ function Events() {
 }
 
 export default function Tab() {
+  const url = Linking.useLinkingURL()
+  const parts = React.useMemo(() => (url ? Linking.parse(url) : null), [url])
+
+  const redirectUri = AuthSession.makeRedirectUri({
+    path: 'auth',
+    queryParams: {
+      foo: 'bar',
+    },
+    scheme: Constants.expoConfig?.scheme
+      ? Array.isArray(Constants.expoConfig?.scheme)
+        ? Constants.expoConfig?.scheme.at(0)
+        : Constants.expoConfig?.scheme
+      : 'org.name.portorn',
+  })
+
   const [authSessionResult, setAuthSessionResult] =
     React.useState<WebBrowser.WebBrowserAuthSessionResult | null>(null)
 
@@ -59,9 +76,20 @@ export default function Tab() {
   }, [])
 
   const handleAuthSessionPressAsync = async () => {
+    const params = [{ capabilities: { createAccount: true, email: true } }]
+
+    const searchParams = new URLSearchParams({
+      id: '1',
+      jsonrpc: '2.0',
+      relayEnv: 'prod',
+      deepLink: redirectUri,
+      method: 'wallet_connect',
+      params: encodeURIComponent(JSON.stringify(params)),
+      _decoded: encodeURIComponent(JSON.stringify(params)),
+    })
     const result = await WebBrowser.openAuthSessionAsync(
-      'https://id.porto.sh/dialog/wallet_connect?relayEnv=prod&_decoded={"method"%3A"wallet_connect"%2C"params"%3A[{"capabilities"%3A{"createAccount"%3Atrue%2C"email"%3Atrue}}]}&id=1&method=wallet_connect&params=[{"capabilities"%3A{"createAccount"%3Atrue%2C"email"%3Atrue}}]&jsonrpc=2.0',
-      'porto-rn://',
+      `https://id.porto.sh/dialog/wallet_connect?${searchParams.toString()}`,
+      redirectUri,
       {
         showTitle: false,
         showInRecents: false,
@@ -75,6 +103,7 @@ export default function Tab() {
   }
   return (
     <View style={styles.container}>
+      <Text>{JSON.stringify({ parts, redirectUri }, null, 2)}</Text>
       <Button title="Open AuthSession" onPress={handleAuthSessionPressAsync} />
       <Text>{authSessionResult && JSON.stringify(authSessionResult)}</Text>
       <Events />

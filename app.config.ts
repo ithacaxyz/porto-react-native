@@ -37,8 +37,8 @@ export default (context: ConfigContext): ExpoConfig => ({
     },
   },
   plugins: [
-    ['patch-project'],
     ['expo-router'],
+    ['patch-project'],
     ['expo-dev-client', { launchMode: 'most-recent' }],
     [
       'expo-build-properties',

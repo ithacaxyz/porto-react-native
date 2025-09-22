@@ -138,6 +138,11 @@ Update `server/apple-app-site-association`:
 
 Use `eas credentials` and follow [this guide](https://docs.expo.dev/linking/android-app-links/#create-assetlinksjson-file) and update `server/assetlinks.json`.
 
+Helpful links:
+
+- [Android Digital Asset Links Tool](https://developers.google.com/digital-asset-links/tools/generator)
+- [Apple App Site Association Validator](https://search.developer.apple.com/appsearch-validation-tool)
+
 ### 5. Deploy and Verify
 
 1. Deploy your server with the updated files
@@ -204,7 +209,7 @@ yarn expo start --clear --tunnel --dev-client
 
 - Make sure [Developer Mode](https://developer.apple.com/documentation/xcode/enabling-developer-mode-on-a-device) is enabled on the device.
 
-### (7) - Press:
+### (7) - Press
 
 - `a` to run on Android. If your physical device is connected, it will automatically select it,
 - `shift + a` to view Android options,

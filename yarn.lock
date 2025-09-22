@@ -3059,6 +3059,11 @@ error-stack-parser@^2.0.6:
   dependencies:
     stackframe "^1.3.4"
 
+eruda@^3.4.3:
+  version "3.4.3"
+  resolved "https://registry.yarnpkg.com/eruda/-/eruda-3.4.3.tgz#70cb99022c0f1115160030f3d357d029074051fa"
+  integrity sha512-J2TsF4dXSspOXev5bJ6mljv0dRrxj21wklrDzbvPmYaEmVoC+2psylyRi70nUPFh1mTQfIBsSusUtAMZtUN+/w==
+
 es-define-property@^1.0.0, es-define-property@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/es-define-property/-/es-define-property-1.0.1.tgz#983eb2f9a6724e9303f61addf011c72e09e0b0fa"
@@ -3310,6 +3315,11 @@ expo-network@~8.0.7:
   version "8.0.7"
   resolved "https://registry.yarnpkg.com/expo-network/-/expo-network-8.0.7.tgz#37f0ed984f4cc57482d3c1c3bf4d4eb3359e0b03"
   integrity sha512-qmISU2tcSHmy1PD3Zd83XXxegcvGPlZSxACTSjE+bD9o3miQRT0HS5YP5MeH97PLiRduGpyUq38kMF5N//mqrQ==
+
+expo-passkey@^0.2.3:
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/expo-passkey/-/expo-passkey-0.2.3.tgz#02918028a7f320d4d3e884fdc5312d05fba67224"
+  integrity sha512-eUSLW99ADyfUjV5vQvEfmmWGMQC4SdFdgBExXDEKNoFN9MxOIFfY8BwbHLbS+daAK+thdKGSThqUTxBmbOxt2g==
 
 expo-router@~6.0.7:
   version "6.0.7"

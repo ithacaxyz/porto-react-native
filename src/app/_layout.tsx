@@ -3,8 +3,11 @@ import {
   DefaultTheme,
   ThemeProvider,
 } from '@react-navigation/native'
-import { View, Text, useColorScheme } from 'react-native'
+import * as React from 'react'
+import { StatusBar } from 'expo-status-bar'
+import * as SafeAreaContext from 'react-native-safe-area-context'
 import { Tabs, TabList, TabTrigger, TabSlot } from 'expo-router/ui'
+import { View, Text, useColorScheme, StyleSheet } from 'react-native'
 
 export { ErrorBoundary } from 'expo-router'
 
@@ -13,38 +16,52 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Tabs>
-        <TabSlot style={{ flex: 1, backgroundColor: '#f9f9f9f9' }} />
-        <TabList>
-          <TabTrigger
-            name="home"
-            href="/"
-            style={{
-              height: 50,
-              width: '50%',
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: 'darkgray',
-            }}
-          >
-            <Text style={{ fontSize: 24, fontWeight: 'bold' }}>Home</Text>
-          </TabTrigger>
-          <View style={{ height: 50, width: 6 }} />
-          <TabTrigger
-            name="auth"
-            href="/auth"
-            style={{
-              height: 50,
-              width: '50%',
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: 'darkgray',
-            }}
-          >
-            <Text style={{ fontSize: 24, fontWeight: 'bold' }}>Auth</Text>
-          </TabTrigger>
-        </TabList>
-      </Tabs>
+      <View style={styles.container}>
+        <StatusBar style="light" />
+        <SafeAreaContext.SafeAreaProvider>
+          <React.Suspense fallback={<Text>Loading...</Text>}>
+            <StatusBar
+              style="light"
+              animated={true}
+              translucent={true}
+              backgroundColor="#f00f"
+              networkActivityIndicatorVisible={true}
+            />
+            <Tabs>
+              <TabSlot style={styles.tabSlot} />
+              <TabList>
+                <TabTrigger name="home" href="/" style={styles.tabTrigger}>
+                  <Text style={styles.tabTriggerText}>Home</Text>
+                </TabTrigger>
+                <View style={{ width: 4 }} />
+                <TabTrigger name="auth" href="/auth" style={styles.tabTrigger}>
+                  <Text style={styles.tabTriggerText}>Auth</Text>
+                </TabTrigger>
+              </TabList>
+            </Tabs>
+          </React.Suspense>
+        </SafeAreaContext.SafeAreaProvider>
+      </View>
     </ThemeProvider>
   )
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#f9f9f9f9',
+  },
+  tabSlot: { flex: 1, backgroundColor: '#f9f9f9f9' },
+  tabTrigger: {
+    height: 50,
+    width: '50%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#0f0f0f',
+  },
+  tabTriggerText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#f9f9f9f9',
+  },
+})

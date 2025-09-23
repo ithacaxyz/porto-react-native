@@ -3,6 +3,12 @@ import type { ExpoConfig, ConfigContext } from 'expo/config'
 
 const scheme = 'porto-rn'
 
+const dev =
+  process.env.NODE_ENV === 'development' ||
+  process.env.ENVIRONMENT === 'development'
+
+const ngrokDomain = `${process.env.EXPO_TUNNEL_SUBDOMAIN}.ngrok.io`
+
 export default (context: ConfigContext): ExpoConfig => ({
   ...context.config,
   slug: scheme,
@@ -19,9 +25,19 @@ export default (context: ConfigContext): ExpoConfig => ({
     supportsTablet: true,
     appleTeamId: 'Q7767Q7TRJ',
     bundleIdentifier: 'org.name.portorn',
-    associatedDomains: ['webcredentials:xporto.up.railway.app'],
+    associatedDomains: [
+      `applinks:${ngrokDomain}`,
+      `webcredentials:${ngrokDomain}`,
+      `activitycontinuation:${ngrokDomain}`,
+
+      `applinks:${process.env.EXPO_PUBLIC_SERVER_DOMAIN}`,
+      `webcredentials:${process.env.EXPO_PUBLIC_SERVER_DOMAIN}`,
+      `activitycontinuation:${process.env.EXPO_PUBLIC_SERVER_DOMAIN}`,
+    ],
   },
   android: {
+    newArchEnabled: true,
+    edgeToEdgeEnabled: true,
     package: 'org.name.portorn',
   },
   web: {
@@ -30,6 +46,7 @@ export default (context: ConfigContext): ExpoConfig => ({
   },
   experiments: {
     typedRoutes: true,
+    turboModules: true,
   },
   extra: {
     eas: {
@@ -37,7 +54,15 @@ export default (context: ConfigContext): ExpoConfig => ({
     },
   },
   plugins: [
-    ['expo-router'],
+    [
+      'expo-router',
+      {
+        origin: `https://${ngrokDomain}`,
+        headOrigin: dev
+          ? `https://${ngrokDomain}`
+          : `https://${process.env.EXPO_PUBLIC_SERVER_DOMAIN}`,
+      },
+    ],
     ['patch-project'],
     ['expo-dev-client', { launchMode: 'most-recent' }],
     [

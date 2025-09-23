@@ -6,8 +6,9 @@
   },
   "build": {
     "base": {
-      "yarn": "1.22.22",
       "node": "22.19.0",
+      "bun": "1.2.23",
+      "yarn": "1.22.22",
       "ios": {
         "image": "latest",
         "simulator": false,
@@ -28,7 +29,11 @@
       "extends": "base",
       "developmentClient": true,
       "distribution": "internal",
+      "ios": {
+        "simulator": true
+      },
       "env": {
+        "NODE_ENV": "development",
         "ENVIRONMENT": "development",
         "EAS_BUILD_DISABLE_BUNDLE_JAVASCRIPT_STEP": "1"
       }
@@ -46,7 +51,9 @@
     "production": {
       "extends": "base",
       "env": {
-        "ENVIRONMENT": "production"
+        "NODE_ENV": "production",
+        "ENVIRONMENT": "production",
+        "EXPO_PUBLIC_PORTO_BASE_URL": "https://id.porto.sh"
       }
     }
   },

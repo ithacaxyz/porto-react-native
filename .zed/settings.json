@@ -6,7 +6,21 @@
     ],
     "json": [
       "apple-app-site-association"
+    ],
+    "gitignore": [
+      ".easignore"
+    ],
+    "properties": [
+      ".sdkmanrc"
     ]
+  },
+  "file_scan_exclusions": [
+    "**/.git",
+    "**/.idea",
+    ".DS_Store"
+  ],
+  "project_panel": {
+    "hide_gitignore": true
   },
   "languages": {
     "HTML": {

@@ -1,14 +1,22 @@
 import * as React from 'react'
-import { porto } from '#lib/porto.ts'
 import Constants from 'expo-constants'
 import type { Address, Hex } from 'ox'
 import * as Linking from 'expo-linking'
 import * as WebBrowser from 'expo-web-browser'
 import * as AuthSession from 'expo-auth-session'
+import { NitroText } from 'react-native-nitro-text'
 import * as SafeAreaContext from 'react-native-safe-area-context'
-import { Button, Text, View, StyleSheet, Platform } from 'react-native'
+import {
+  Button,
+  View,
+  StyleSheet,
+  Platform,
+  Text as WebText,
+} from 'react-native'
 
 if (Platform.OS === 'web') WebBrowser.maybeCompleteAuthSession()
+
+const Text = Platform.OS === 'web' ? WebText : NitroText
 
 const useIsomorphicLayoutEffect =
   typeof window === 'undefined' ? React.useEffect : React.useLayoutEffect
@@ -26,8 +34,6 @@ const portoBaseUrl = `${process.env.EXPO_PUBLIC_PORTO_BASE_URL || 'https://id.po
  */
 
 export default function Tab() {
-  const linkingUrl = Linking.useLinkingURL()
-
   const [authSessionStatus, setAuthSessionStatus] = React.useState<
     'success' | 'error' | 'idle'
   >('idle')
@@ -69,11 +75,6 @@ export default function Tab() {
       },
     ]
 
-    // const redirectUri =
-    //   Platform.OS === 'web'
-    //     ? `https://${process.env.EXPO_PUBLIC_TUNNEL_SUBDOMAIN}.ngrok.io/auth`
-    //     : `porto-rn://auth`
-
     const redirectUri = AuthSession.makeRedirectUri({
       path: 'auth',
     })
@@ -107,12 +108,13 @@ export default function Tab() {
     const error = (result as any).error
     const success = url.searchParams.get('success')
     const status = url.searchParams.get('status')
+    const message = url.searchParams.get('message')
     if (status !== 'success') {
-      const message = url.searchParams.get('message')
       setAuthError(`${status} - ${message}`)
       return
     }
     const payload = url.searchParams.get('payload')
+    const _typedPayload = { status, payload, message } as RedirectSearchParams
     console.info('error', error)
     console.info('status', status)
     console.info('payload', payload)
@@ -165,8 +167,6 @@ export default function Tab() {
         title="AuthSession (select account)"
         onPress={() => handleAuthSessionPress({ createAccount: false })}
       />
-
-      <Events />
     </SafeAreaContext.SafeAreaView>
   )
 }
@@ -183,45 +183,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'monospace',
   },
+  codeBlock: {
+    fontSize: 14,
+    fontFamily: 'ui-monospace',
+    backgroundColor: '#1e1e1e',
+    color: '#d4d4d4',
+    padding: 16,
+    borderRadius: 8,
+    lineHeight: 20,
+  },
 })
-
-function Events() {
-  const [responses, setResponses] = React.useState<Record<string, unknown[]>>(
-    {},
-  )
-  React.useEffect(() => {
-    const handleResponse = (event: string) => (response: unknown) =>
-      setResponses((responses) => ({
-        ...responses,
-        [event]: [...(responses[event] ?? []), response],
-      }))
-
-    const handleAccountsChanged = handleResponse('accountsChanged')
-    const handleChainChanged = handleResponse('chainChanged')
-    const handleConnect = handleResponse('connect')
-    const handleDisconnect = handleResponse('disconnect')
-    const handleMessage = handleResponse('message')
-
-    porto.provider.on('accountsChanged', handleAccountsChanged)
-    porto.provider.on('chainChanged', handleChainChanged)
-    porto.provider.on('connect', handleConnect)
-    porto.provider.on('disconnect', handleDisconnect)
-    porto.provider.on('message', handleMessage)
-    return () => {
-      porto.provider.removeListener('accountsChanged', handleAccountsChanged)
-      porto.provider.removeListener('chainChanged', handleChainChanged)
-      porto.provider.removeListener('connect', handleConnect)
-      porto.provider.removeListener('disconnect', handleDisconnect)
-      porto.provider.removeListener('message', handleMessage)
-    }
-  }, [])
-
-  return (
-    <View>
-      <Text>{JSON.stringify(responses, null, 2)}</Text>
-    </View>
-  )
-}
 
 type RedirectSearchParams = {
   payload: string

@@ -5397,6 +5397,11 @@ react-native-nitro-modules@^0.29.6:
   resolved "https://registry.yarnpkg.com/react-native-nitro-modules/-/react-native-nitro-modules-0.29.6.tgz#7e9bbb2d240c6c10f9fa1316b34efbc19a61135b"
   integrity sha512-Zm7x7DPx2bYc/eMfJ4lg2CCyXRCEm6as1ZyVU/2vCqMskiQxQquL3INqjne+tEJw+/h+mrnKrb7z7PiUitzEQw==
 
+react-native-nitro-text@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/react-native-nitro-text/-/react-native-nitro-text-1.0.3.tgz#81c8d5c0d8017d2d56a9d7ffc0af36d99c143bf1"
+  integrity sha512-S+Z5rFhbvPr3fIa/c8gsrP78tyf24AujwDpUG9EMwT4M8T1Yy8PSosbUM+SEpJIk+x4H6dcoEeZhw1fr/THP2Q==
+
 react-native-passkeys@^0.3.3:
   version "0.3.3"
   resolved "https://registry.yarnpkg.com/react-native-passkeys/-/react-native-passkeys-0.3.3.tgz#ec0dce571bb4948576a6cd77f38569894c33dc50"

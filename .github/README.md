@@ -17,25 +17,33 @@ A Porto React Native template.
   - Cocoapods 1.16.2<sup>1</sup>
   - [fastlane](https://github.com/fastlane/fastlane): `brew install fastlane`
 - Android Requirements (skip if you're not building for Android):
-  - Java 21.0.7<sup>3</sup>
-  - Gradle 9.0.0<sup>3</sup>
+  - Java 21.0.7<sup>1</sup>
+  - Gradle 9.0.0<sup>1</sup>
+  - Groovy 5.0.1<sup>1</sup>
   - Android Studio<sup>4</sup>
 - Optional but highly recommended:
   - [Expo Orbit](https://docs.expo.dev/build/orbit)
 
-<sup>1</sup> [mise](https://mise.jdx.dev)
+<sup>1</sup> [mise](https://mise.jdx.dev):
 
-- Once you have `ruby` installed with `mise`, use it to install `cocoapods`.
+```sh
+mise use ruby@3.4.6 --pin
+mise use cocoapods@1.16.2 --pin
+mise use bun@1.2.22 --pin
+mise use node@22.19.0 --pin
+mise use gradle@9.0.0 --pin
+mise use groovy@5.0.1 --pin
+mise use java@zulu-17.60.17.0 --pin
+```
 
 <sup>2</sup> [xcodes](https://github.com/XcodesOrg/xcodesApp)
 
-<sup>3</sup> [sdkman](https://sdkman.io): run `sdk env install` in repo root to auto install Java and Gradle
 
 <sup>4</sup> [JetBrains Toolbox](https://www.jetbrains.com/toolbox-app).
 Once you have Android Studio installed:
 
-- install a newer SDK Platform Tools - I use 36.1 ([demo](https://share.cleanshot.com/KJ6rYZjw))
-- install a newer virtual device with Google Play Services enabled - I use Pixel 9 Pro Fold ([demo](https://share.cleanshot.com/LhdhbMlS))
+  - install a newer SDK Platform Tools - I use 36.1 ([demo](https://share.cleanshot.com/KJ6rYZjw))
+  - install a newer virtual device with Google Play Services enabled - I use Pixel 9 Pro Fold ([demo](https://share.cleanshot.com/LhdhbMlS))
 
 ____
 

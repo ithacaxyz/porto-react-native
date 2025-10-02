@@ -1,4 +1,4 @@
-import { Stack } from 'expo-router'
+import { Link, Stack } from 'expo-router'
 import { Text, View } from 'react-native'
 
 export default function NotFoundScreen() {
@@ -14,9 +14,9 @@ export default function NotFoundScreen() {
         }}
       >
         <Text>This screen doesn’t exist.</Text>
-        {/* <Link href="/">
+        <Link href="/">
           <Text>Go to home screen</Text>
-        </Link> */}
+        </Link>
       </View>
     </>
   )

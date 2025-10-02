@@ -2,7 +2,7 @@ import * as NYPM from 'nypm'
 
 NYPM.dedupeDependencies({
   cwd: process.cwd(),
-  packageManager: 'yarn',
+  packageManager: 'bun',
   recreateLockfile: true,
 })
   .then(() => {

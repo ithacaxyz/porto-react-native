@@ -3,7 +3,7 @@
 ruby = "3.4.6"
 cocoapods = "1.16.2"
 # web
-bun = "1.2.22"
+bun = "1.2.23"
 node = "22.19.0"
 # android
 gradle = "9.0.0"

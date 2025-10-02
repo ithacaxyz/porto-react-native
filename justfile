@@ -13,7 +13,7 @@ dev:
     bun expo start --clear --tunnel --dev-client
 
 doctor:
-    bun expo install --fix && npx expo-doctor --verbose --yarn
+    bun expo install --fix && bun x expo-doctor --verbose --bun
     bun x expo config --full
 
 # clean metro cache and expo cache

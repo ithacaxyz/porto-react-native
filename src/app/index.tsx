@@ -1,140 +1,154 @@
-import {
-  View,
-  Text,
-  Button,
-  Platform,
-  TextInput,
-  StyleSheet,
-  TouchableOpacity,
-} from 'react-native'
+import { View, Text, Button, StyleSheet } from 'react-native'
 import * as React from 'react'
 import { Link } from 'expo-router'
-import { type Address, Hex } from 'ox'
-import { WalletActions } from 'porto/viem'
-import { porto, walletClient } from '#lib/porto.ts'
+import { Checkbox } from 'expo-checkbox'
+import { Hex, Json } from 'ox'
+import { permissions, porto } from '#lib/porto.ts'
+// import { verifyHash, verifyMessage } from 'viem/actions'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
+// import { hashTypedData, isAddress, isHex, maxUint256 } from 'viem'
 
-export default function Tab() {
+export default function Page() {
+  return (
+    <SafeAreaProvider style={styles.safeAreaProvider}>
+      <Link
+        href="https://porto.sh/sdk/api/mode#modereactnative"
+        style={styles.link}
+      >
+        Porto React Native API Reference
+      </Link>
+      <View>
+        <Text style={{ fontSize: 16, fontWeight: 'bold', marginVertical: 5 }}>
+          Account Management
+        </Text>
+        <Connect />
+        <Login />
+      </View>
+    </SafeAreaProvider>
+  )
+}
+
+function Divider() {
+  return (
+    <View style={{ height: 1, backgroundColor: '#ccc', marginVertical: 12 }} />
+  )
+}
+
+function Pre(props: { text: ReadonlyArray<string> | null }) {
+  if (!props.text) return null
+  return (
+    <View style={{ padding: 16, backgroundColor: '#f9f9f9', borderRadius: 8 }}>
+      <Text style={{ fontSize: 14, color: '#666', fontFamily: 'monospace' }}>
+        {Json.stringify(props.text, null, 2)}
+      </Text>
+    </View>
+  )
+}
+
+function Connect() {
+  const [email, setEmail] = React.useState<boolean>(true)
+  const [grantPermissions, setGrantPermissions] = React.useState<boolean>(false)
+  const [result, setResult] = React.useState<unknown | null>(null)
   const [error, setError] = React.useState<string | null>(null)
-  const [result, setResult] = React.useState<string | null>(null)
-  const [account, setAccount] = React.useState<Address.Address | undefined>(
-    undefined,
-  )
-  const [message, setMessage] = React.useState<string | undefined>(undefined)
-  const [signature, setSignature] = React.useState<string | undefined>(
-    undefined,
-  )
-
-  async function createAccount() {
-    console.info('connecting to porto...')
-    try {
-      const response = await WalletActions.connect(walletClient, {
-        createAccount: {
-          label:
-            Platform.OS === 'web' ? undefined : `___Porto_RN_${Date.now()}`,
-        },
-      })
-      const [account] = response.accounts
-      console.info('\n[porto] wallet_connect address:', account?.address, '\n')
-      setAccount(account?.address)
-      setResult(JSON.stringify(account, undefined, 2))
-    } catch (error) {
-      console.error('porto connect error', error)
-      setError(error instanceof Error ? error.message : JSON.stringify(error))
-    }
-  }
-
-  async function signIn() {
-    try {
-      const response = await WalletActions.connect(walletClient, {
-        selectAccount: true,
-      })
-
-      const [account] = response.accounts
-      setAccount(account?.address)
-      console.info('\n[porto] wallet_connect address:', account?.address, '\n')
-      setResult(JSON.stringify(account, undefined, 2))
-    } catch (error) {
-      console.error('porto connect error', error)
-      setError(error instanceof Error ? error.message : JSON.stringify(error))
-    }
-  }
-
-  async function disconnect() {
-    try {
-      await WalletActions.disconnect(walletClient)
-      setResult('disconnected')
-      setMessage(undefined)
-      setAccount(undefined)
-      setSignature(undefined)
-    } catch (error) {
-      console.error('porto disconnect error', error)
-      setError(error instanceof Error ? error.message : JSON.stringify(error))
-    }
-  }
-
-  async function signMessage() {
-    try {
-      if (!account) return
-      const response = await porto.provider.request({
-        method: 'personal_sign',
-        params: [Hex.fromString(message ?? 'Hello, world!'), account],
-      })
-
-      console.log('sign message response', response)
-      setSignature(response)
-    } catch (error) {
-      console.error('porto sign message error', error)
-      setError(error instanceof Error ? error.message : JSON.stringify(error))
-    }
-  }
 
   return (
-    <View style={styles.outerView}>
-      <Link href="https://porto.sh/sdk/guides/react-native" style={styles.link}>
-        porto.sh/sdk/guides/react-native
-      </Link>
-      <Text style={styles.accountText}>{account}</Text>
-      <SafeAreaProvider style={styles.safeAreaProvider}>
-        <View style={styles.innerView}>
-          <Button title="Create new account" onPress={createAccount} />
-          <Button title="sign in" onPress={signIn} />
-          <Button title="Disconnect" onPress={disconnect} />
+    <View style={{ flex: 1, gap: 16 }}>
+      <Text>wallet_connect</Text>
+      <View>
+        <Button
+          onPress={async () => {
+            const payload = {
+              capabilities: {
+                createAccount: false,
+                email,
+                grantPermissions: grantPermissions ? permissions() : undefined,
+              },
+            } as const
+            return porto.provider
+              .request({
+                method: 'wallet_connect',
+                params: [payload],
+              })
+              .then(setResult)
+              .catch((error) => {
+                console.info(payload)
+                console.error(error)
+                setError(
+                  Json.stringify({ error: error.message, payload }, null, 2),
+                )
+              })
+          }}
+          title="Login"
+        />
+        <Divider />
+        <Button
+          title="Register"
+          onPress={async () => {
+            const payload = {
+              capabilities: {
+                createAccount: true,
+                email,
+                grantPermissions: grantPermissions ? permissions() : undefined,
+              },
+            } as const
+            return porto.provider
+              .request({
+                method: 'wallet_connect',
+                params: [payload],
+              })
+              .then(setResult)
+              .catch((error) => {
+                console.info(payload)
+                console.error(error)
+                setError(
+                  Json.stringify({ error: error.message, payload }, null, 2),
+                )
+              })
+          }}
+        />
+      </View>
 
-          <TouchableOpacity
-            onPress={signMessage}
-            disabled={!account}
-            style={[
-              styles.customButton,
-              !account && styles.customButtonDisabled,
-            ]}
-          >
-            <Text
-              style={[
-                styles.customButtonText,
-                !account && styles.customButtonTextDisabled,
-              ]}
-            >
-              sign message
-            </Text>
-          </TouchableOpacity>
-
-          <TextInput
-            inputMode="text"
-            readOnly={!account}
-            editable={!!account}
-            style={styles.input}
-            placeholder="message"
-            value={message ?? ''}
-            onChangeText={setMessage}
-            placeholderTextColor="gray"
-          />
+      <View style={{ display: 'flex', flexDirection: 'row', gap: 10 }}>
+        <View style={{ display: 'flex', flexDirection: 'row', gap: 5 }}>
+          <Checkbox value={email} onValueChange={() => setEmail((x) => !x)} />
+          <Text>Email</Text>
         </View>
 
-        {result ? <Text>{result}</Text> : null}
-        {signature ? <Text>{signature}</Text> : null}
-        {error ? <Text style={{ color: 'red' }}>{error}</Text> : null}
-      </SafeAreaProvider>
+        <View style={{ display: 'flex', flexDirection: 'row', gap: 5 }}>
+          <Checkbox
+            value={grantPermissions}
+            onValueChange={() => setGrantPermissions((x) => !x)}
+          />
+          <Text>Grant Permissions</Text>
+        </View>
+      </View>
+      {/*<Text style={{ fontFamily: 'monospace' }}>
+        {Json.stringify(result, null, 2)}
+      </Text>
+      <Text style={{ fontFamily: 'monospace' }}>
+        {Json.stringify(error, null, 2)}
+      </Text>*/}
+      <Pre>{result}</Pre>
+      <Pre>{error}</Pre>
+    </View>
+  )
+}
+
+function Login() {
+  const [result, setResult] = React.useState<readonly string[] | null>(null)
+
+  return (
+    <View>
+      <Text>eth_requestAccounts</Text>
+      <Button
+        onPress={() =>
+          porto.provider
+            .request({ method: 'eth_requestAccounts' })
+            .then(setResult)
+        }
+        title="Login"
+      />
+      <Pre text={result} />
     </View>
   )
 }
@@ -189,10 +203,6 @@ const styles = StyleSheet.create({
     fontWeight: 'light',
     fontFamily: 'monospace',
     textDecorationLine: 'underline',
-    /**
-     * TODO: unhide me when guide is live
-     */
-    display: 'none',
   },
   customButton: {
     backgroundColor: '#2196F3',

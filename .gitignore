@@ -57,10 +57,10 @@ android/
 *.csr
 *.crl
 *.pem
-.vscode
 *.aab
 
 *.ipa
 
 *.gz
 *.app/
+_dist

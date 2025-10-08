@@ -42,7 +42,10 @@ generate-android-native:
 # build iOS locally with EAS
 build-eas-ios-local:
     EAS_BUILD_DISABLE_BUNDLE_JAVASCRIPT_STEP=1 eas build \
-        --platform='ios' --local --non-interactive --profile='development'
+        --platform='ios' \
+         --profile='development' \
+         --local \
+         --non-interactive
 
 # build Android locally with EAS
 build-eas-android-local:

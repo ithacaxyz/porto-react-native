@@ -1,4 +1,4 @@
 // ensure required polyfills are in place before routing loads
-import './shims/crypto-bridge.js'
+import 'porto/react-native'
 
 import 'expo-router/entry'

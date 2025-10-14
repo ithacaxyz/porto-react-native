@@ -1,16 +1,11 @@
-// _dist is me manually copying the dist folder from porto
-import 'porto/react-native'
-
 import { Hex, Value } from 'ox'
 import { Porto, Mode } from 'porto'
-import { baseSepolia } from 'porto/Chains'
+import { baseSepolia } from 'porto/core/Chains'
 
 import { exp1Address, exp2Address } from '#lib/_generated/contracts.ts'
 
 export const porto = Porto.create({
-  mode: Mode.reactNative({
-    host: 'https://o.bun-alewife.ts.net/dialog?relayEnv=prod',
-  }),
+  mode: Mode.reactNative(),
   chains: [baseSepolia],
 })
 

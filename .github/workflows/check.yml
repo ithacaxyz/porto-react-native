@@ -29,12 +29,12 @@ jobs:
           bun-version: 'latest'
 
       - name: 'Install Dependencies'
-        run: yarn install --frozen-lockfile
+        run: bun install --frozen-lockfile
 
       - name: 'Expo Doctor'
         run: |
-          yarn expo install --fix
-          bun x expo-doctor --verbose --yarn
+          bun x expo-doctor@latest --verbose --bun
+          bun expo install --fix --bun
 
       - name: 'Lint & Format'
         run: |

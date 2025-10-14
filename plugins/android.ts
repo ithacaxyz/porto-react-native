@@ -58,6 +58,13 @@ const withAndroidPlugin: ConfigPlugin<Props> = (config, props = {}) => {
   config = withAppBuildGradle(config, (props) => {
     let src = props.modResults.contents
 
+    // If debug suffix is disabled, proactively strip any previous suffix lines
+    if (!enableDebugSuffix) {
+      // Remove common lines that add a suffix to the debug variant
+      src = src.replace(/^[\t ]*applicationIdSuffix\s+"\.debug"\s*\n/gm, '')
+      src = src.replace(/^[\t ]*versionNameSuffix\s+"-debug"\s*\n/gm, '')
+    }
+
     // Add lint block if requested and missing
     if (disableReleaseLint && !/\n\s*lint\s*\{/.test(src)) {
       const lint = `    lint {\n        checkReleaseBuilds false\n        abortOnError false\n    }`

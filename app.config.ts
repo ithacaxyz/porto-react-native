@@ -3,14 +3,21 @@ import type { ExpoConfig, ConfigContext } from 'expo/config'
 
 const scheme = 'porto-rn'
 
+const dev =
+  process.env.NODE_ENV === 'development' ||
+  process.env.ENVIRONMENT === 'development'
+
+const ngrokDomain = `${process.env.EXPO_TUNNEL_SUBDOMAIN}.ngrok.io`
+
 export default (context: ConfigContext): ExpoConfig => ({
   ...context.config,
   slug: scheme,
   name: scheme,
   scheme: scheme,
   version: '1.0.0',
-  userInterfaceStyle: 'automatic',
   newArchEnabled: true,
+  userInterfaceStyle: 'automatic',
+  platforms: ['android', 'ios', 'web'],
   ios: {
     config: {
       usesNonExemptEncryption: false,
@@ -18,26 +25,45 @@ export default (context: ConfigContext): ExpoConfig => ({
     supportsTablet: true,
     appleTeamId: 'Q7767Q7TRJ',
     bundleIdentifier: 'org.name.portorn',
-    associatedDomains: ['webcredentials:xporto.up.railway.app'],
+    associatedDomains: [
+      `applinks:${ngrokDomain}`,
+      `webcredentials:${ngrokDomain}`,
+      `activitycontinuation:${ngrokDomain}`,
+
+      `applinks:${process.env.EXPO_PUBLIC_SERVER_DOMAIN}`,
+      `webcredentials:${process.env.EXPO_PUBLIC_SERVER_DOMAIN}`,
+      `activitycontinuation:${process.env.EXPO_PUBLIC_SERVER_DOMAIN}`,
+    ],
   },
   android: {
+    newArchEnabled: true,
+    edgeToEdgeEnabled: true,
     package: 'org.name.portorn',
   },
   web: {
     output: 'single',
     bundler: 'metro',
   },
+  experiments: {
+    typedRoutes: true,
+    turboModules: true,
+  },
   extra: {
     eas: {
       projectId: '2465a0e5-8758-4bbf-8641-49004b3ea709',
     },
   },
-  experiments: {
-    typedRoutes: true,
-  },
   plugins: [
+    [
+      'expo-router',
+      {
+        origin: `https://${ngrokDomain}`,
+        headOrigin: dev
+          ? `https://${ngrokDomain}`
+          : `https://${process.env.EXPO_PUBLIC_SERVER_DOMAIN}`,
+      },
+    ],
     ['patch-project'],
-    ['expo-router'],
     ['expo-dev-client', { launchMode: 'most-recent' }],
     [
       'expo-build-properties',
@@ -66,7 +92,7 @@ export default (context: ConfigContext): ExpoConfig => ({
       './plugins/android.ts',
       {
         workersMax: 2,
-        enableDebugSuffix: true,
+        enableDebugSuffix: false,
         disableReleaseLint: true,
         versionNameSuffix: '-debug',
         jvmArgs: [
@@ -77,6 +103,9 @@ export default (context: ConfigContext): ExpoConfig => ({
         ].join(' '),
       },
     ],
-    ['./plugins/ios.ts', { enableDebugSuffix: true, bundleIdSuffix: '.debug' }],
+    [
+      './plugins/ios.ts',
+      { enableDebugSuffix: false, bundleIdSuffix: '.debug' },
+    ],
   ],
 })

@@ -1,0 +1,11 @@
+[tools]
+# iOS
+ruby = "3.4.6"
+cocoapods = "1.16.2"
+# web
+bun = "1.2.23"
+node = "22.19.0"
+# android
+gradle = "9.0.0"
+groovy = "5.0.1"
+java = "zulu-17.60.17.0"

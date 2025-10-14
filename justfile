@@ -10,10 +10,10 @@ lint:
     biome lint . --write --unsafe
 
 dev:
-    yarn expo start --clear --tunnel --dev-client
+    bun expo start --clear --tunnel --dev-client
 
 doctor:
-    yarn expo install --fix && npx expo-doctor --verbose --yarn
+    bun expo install --fix && bun x expo-doctor --verbose --bun
     bun x expo config --full
 
 # clean metro cache and expo cache
@@ -24,27 +24,36 @@ clean-metro:
 
 clean-ios:
     rm -rf ios
+    rm -fr portorn.app
 
 clean-android:
     rm -rf android
 
+clean-all: clean-metro clean-ios clean-android
+
 # regenerate native ./ios from `app.config.ts` and apply plugins + build-properties
 generate-ios-native:
-    EXPO_NO_GIT_STATUS=1 yarn expo prebuild --platform='ios' --clean
+    EXPO_NO_GIT_STATUS=1 bun expo prebuild --platform='ios' --clean
 
 # regenerate native ./android from `app.config.ts` and apply plugins + build-properties
 generate-android-native:
-    EXPO_NO_GIT_STATUS=1 yarn expo prebuild --platform='android' --clean
+    EXPO_NO_GIT_STATUS=1 bun expo prebuild --platform='android' --clean
 
 # build iOS locally with EAS
 build-eas-ios-local:
     EAS_BUILD_DISABLE_BUNDLE_JAVASCRIPT_STEP=1 eas build \
-        --platform ios --local --non-interactive
+        --platform='ios' \
+         --profile='development' \
+         --local \
+         --non-interactive
 
 # build Android locally with EAS
 build-eas-android-local:
-    ANDROID_HOME="~/Library/Android/sdk" EAS_BUILD_DISABLE_BUNDLE_JAVASCRIPT_STEP=1 eas build \
-        --platform android --local --non-interactive
+    ANDROID_HOME="/Users/o/Library/Android/sdk" EAS_BUILD_DISABLE_BUNDLE_JAVASCRIPT_STEP=1 eas build \
+        --platform='android' \
+        --profile='development' \
+        --local \
+        --non-interactive
 
 # build android
 build-android: clean-android clean-metro generate-android-native build-eas-android-local

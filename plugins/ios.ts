@@ -8,22 +8,17 @@ type Props = {
 const withIosTweaks: ConfigPlugin<Props> = (config, props = {}) => {
   const { enableDebugSuffix = true, bundleIdSuffix = '.debug' } = props
 
-  if (!enableDebugSuffix) return config
-
   const baseId = config.ios?.bundleIdentifier
   if (!baseId) throw new Error('bundleIdentifier is required')
 
-  const debugId = `${baseId}${bundleIdSuffix}`
+  const targetId = enableDebugSuffix ? `${baseId}${bundleIdSuffix}` : baseId
+
   config = withXcodeProject(config, (props) => {
     const proj = props.modResults
-    // Set PRODUCT_BUNDLE_IDENTIFIER for Debug build configuration(s)
-    // Applies to all targets that have a Debug configuration
     try {
-      // updateBuildProperty(prop, value, buildName)
-      // buildName: 'Debug' updates all Debug configurations
       ;(proj as any).updateBuildProperty(
         'PRODUCT_BUNDLE_IDENTIFIER',
-        debugId,
+        targetId,
         'Debug',
       )
     } catch {}

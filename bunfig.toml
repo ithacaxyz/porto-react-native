@@ -3,5 +3,5 @@ telemetry = false
 [run]
 bun = true
 
-[install]
-lockfile = { print = "yarn" }
+# [install]
+# lockfile = { print = "yarn" }

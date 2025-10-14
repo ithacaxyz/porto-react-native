@@ -19,10 +19,8 @@
     "doctor": "bun expo install --fix && bun x expo-doctor --verbose --bun || bun expo install --check --bun"
   },
   "dependencies": {
-    "@craftzdog/react-native-buffer": "^6.1.0",
     "@expo/metro-runtime": "~6.1.2",
     "@expo/ui": "~0.2.0-beta.4",
-    "buffer": "^6.0.3",
     "eruda": "^3.4.3",
     "expo": "54.0.13",
     "expo-application": "~7.0.7",
@@ -37,7 +35,6 @@
     "expo-linking": "~8.0.8",
     "expo-local-authentication": "~17.0.7",
     "expo-network": "~8.0.7",
-    "expo-passkey": "^0.2.3",
     "expo-passkeys": "^0.1.11",
     "expo-router": "~6.0.12",
     "expo-secure-store": "~15.0.7",
@@ -49,11 +46,9 @@
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-native": "0.81.4",
-    "react-native-get-random-values": "~1.11.0",
     "react-native-nitro-modules": "^0.29.6",
     "react-native-nitro-text": "^1.0.3",
     "react-native-passkeys": "^0.3.3",
-    "react-native-quick-crypto": "^0.7.17",
     "react-native-reanimated": "~4.1.0",
     "react-native-safe-area-context": "~5.6.0",
     "react-native-screens": "^4.16.0",
@@ -81,5 +76,5 @@
     "typescript": "~5.9.2"
   },
   "private": true,
-  "packageManager": "bun@1.2.23"
+  "packageManager": "bun@1.3.0"
 }
